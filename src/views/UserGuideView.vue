@@ -273,7 +273,7 @@
       </main>
 
       <!-- Right Table of Contents (On this page) -->
-      <aside class="guide-toc" v-if="currentGuide && currentGuide.steps.length">
+      <aside class="guide-toc" v-if="currentGuide && currentGuide.steps && currentGuide.steps.length">
         <div class="guide-toc__inner">
           <h4 class="guide-toc__title">On This Page</h4>
           <ul class="guide-toc__list">

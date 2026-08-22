@@ -145,8 +145,9 @@
             
             <!-- Render raw HTML from Aureus docs -->
             <div v-if="currentGuide.htmlContent" class="guide-raw-html" v-html="currentGuide.htmlContent"></div>
-            <section
-              v-for="(step, stepIndex) in currentGuide.steps"
+            <template v-if="currentGuide.steps">
+              <section
+                v-for="(step, stepIndex) in currentGuide.steps"
               :key="stepIndex"
               :id="`step-${stepIndex + 1}`"
               class="guide-step-section"
@@ -244,6 +245,7 @@
                 </div>
               </div>
             </section>
+            </template>
           </div>
 
           <!-- Bottom Navigation (Prev / Next Guide) -->

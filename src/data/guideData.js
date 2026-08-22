@@ -1,4 +1,7 @@
-export const guideCategories = [
+import { guideCategories as aureusCategories } from './aureusGuides.js';
+
+// Internal custom guides array
+const customCategories = [
   {
     id: 'getting-started',
     name: 'Getting Started',
@@ -553,4 +556,9 @@ export const guideCategories = [
       }
     ]
   }
-]
+];
+
+export const guideCategories = [
+  ...customCategories,
+  ...aureusCategories
+];

@@ -142,6 +142,9 @@
 
           <!-- Step-by-Step Sections -->
           <div class="guide-doc-body">
+            
+            <!-- Render raw HTML from Aureus docs -->
+            <div v-if="currentGuide.htmlContent" class="guide-raw-html" v-html="currentGuide.htmlContent"></div>
             <section
               v-for="(step, stepIndex) in currentGuide.steps"
               :key="stepIndex"
@@ -1150,6 +1153,58 @@ const getCellClass = (cellValue) => {
   flex-direction: column;
   gap: var(--space-2);
   margin-bottom: var(--space-8);
+}
+
+.guide-raw-html {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  color: var(--text-secondary);
+  line-height: var(--leading-relaxed);
+}
+
+.guide-raw-html h1,
+.guide-raw-html h2,
+.guide-raw-html h3 {
+  color: var(--text-primary);
+  margin-top: var(--space-6);
+  margin-bottom: var(--space-2);
+}
+
+.guide-raw-html h1 { font-size: var(--text-2xl); }
+.guide-raw-html h2 { font-size: var(--text-xl); border-bottom: 1px solid var(--color-sand); padding-bottom: var(--space-2); }
+.guide-raw-html h3 { font-size: var(--text-lg); }
+
+.guide-raw-html p {
+  margin-bottom: var(--space-4);
+}
+
+.guide-raw-html ul, 
+.guide-raw-html ol {
+  padding-left: var(--space-6);
+  margin-bottom: var(--space-4);
+}
+
+.guide-raw-html li {
+  margin-bottom: var(--space-2);
+}
+
+.guide-raw-html blockquote {
+  border-left: 4px solid var(--color-amber);
+  padding-left: var(--space-4);
+  background: var(--color-sand-light);
+  padding-top: var(--space-3);
+  padding-bottom: var(--space-3);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  margin-bottom: var(--space-4);
+}
+
+.guide-raw-html code {
+  background: var(--color-sand);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.9em;
 }
 
 .guide-toc__link {

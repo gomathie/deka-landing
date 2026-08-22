@@ -541,6 +541,10 @@ const getCellClass = (cellValue) => {
   min-height: calc(100vh - var(--header-height));
 }
 
+.guide-sidebar-backdrop {
+  display: none;
+}
+
 /* ── Left Sidebar ── */
 .guide-sidebar {
   position: sticky;
@@ -1244,6 +1248,8 @@ const getCellClass = (cellValue) => {
   .guide-sidebar-backdrop--visible {
     display: block;
   }
+
+
 
   .guide-content {
     padding: var(--space-6) var(--space-4) var(--space-16);

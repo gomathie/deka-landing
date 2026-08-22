@@ -1,15 +1,19 @@
 <template>
   <header class="header" :class="{ 'header--scrolled': isScrolled }" id="site-header">
     <div class="container header__inner">
-      <a href="/" class="header__logo" aria-label="DEKA ERP Home">
+      <router-link to="/" class="header__logo" aria-label="DEKA ERP Home">
         <img src="/logos/logo-full-light.svg" alt="DEKA ERP" class="header__logo-img header__logo-img--light" width="126" height="35" />
-      </a>
+      </router-link>
 
       <nav class="header__nav" :class="{ 'header__nav--open': menuOpen }" id="main-nav" aria-label="Main navigation">
-        <a href="#features" class="header__link" @click="closeMenu">Features</a>
-        <a href="#benefits" class="header__link" @click="closeMenu">Benefits</a>
-        <a href="#multi-company" class="header__link" @click="closeMenu">Multi-Company</a>
-        <a href="#deployment" class="header__link" @click="closeMenu">Deployment</a>
+        <a :href="isHomePage ? '#features' : '/#features'" class="header__link" @click="closeMenu">Features</a>
+        <a :href="isHomePage ? '#benefits' : '/#benefits'" class="header__link" @click="closeMenu">Benefits</a>
+        <a :href="isHomePage ? '#multi-company' : '/#multi-company'" class="header__link" @click="closeMenu">Multi-Company</a>
+        <a :href="isHomePage ? '#deployment' : '/#deployment'" class="header__link" @click="closeMenu">Deployment</a>
+        <router-link to="/guide" class="header__link header__link--guide" @click="closeMenu">
+          <span>User Guide</span>
+          <span class="header__guide-pill">Docs</span>
+        </router-link>
       </nav>
 
       <div class="header__actions">
@@ -35,10 +39,13 @@
     <!-- Mobile overlay -->
     <div class="header__overlay" :class="{ 'header__overlay--visible': menuOpen }" @click="closeMenu">
       <nav class="header__mobile-nav" @click.stop>
-        <a href="#features" class="header__mobile-link" @click="closeMenu">Features</a>
-        <a href="#benefits" class="header__mobile-link" @click="closeMenu">Benefits</a>
-        <a href="#multi-company" class="header__mobile-link" @click="closeMenu">Multi-Company</a>
-        <a href="#deployment" class="header__mobile-link" @click="closeMenu">Deployment</a>
+        <a :href="isHomePage ? '#features' : '/#features'" class="header__mobile-link" @click="closeMenu">Features</a>
+        <a :href="isHomePage ? '#benefits' : '/#benefits'" class="header__mobile-link" @click="closeMenu">Benefits</a>
+        <a :href="isHomePage ? '#multi-company' : '/#multi-company'" class="header__mobile-link" @click="closeMenu">Multi-Company</a>
+        <a :href="isHomePage ? '#deployment' : '/#deployment'" class="header__mobile-link" @click="closeMenu">Deployment</a>
+        <router-link to="/guide" class="header__mobile-link header__mobile-link--guide" @click="closeMenu">
+          📖 User Guide &amp; Feature Walkthroughs
+        </router-link>
         <div class="header__mobile-actions">
           <a href="https://cloud.dekaerp.com/admin/login" class="btn btn--secondary btn--large" @click="closeMenu">Sign In</a>
           <a href="https://cloud.dekaerp.com" class="btn btn--primary btn--large" @click="closeMenu">Get Started</a>
@@ -49,10 +56,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
 const isScrolled = ref(false)
 const menuOpen = ref(false)
+
+const isHomePage = computed(() => route.path === '/')
 
 const closeMenu = () => {
   menuOpen.value = false
@@ -125,6 +136,9 @@ onUnmounted(() => {
   color: var(--text-secondary);
   transition: color var(--duration-fast) var(--ease-out);
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .header__link::after {
@@ -145,6 +159,16 @@ onUnmounted(() => {
 
 .header__link:hover::after {
   width: 100%;
+}
+
+.header__guide-pill {
+  font-size: 10px;
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  background: var(--color-amber-glow);
+  color: var(--color-amber-hover);
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
 }
 
 .header__actions {
@@ -245,6 +269,12 @@ onUnmounted(() => {
     color: var(--text-primary);
     border-radius: var(--radius-md);
     transition: background-color var(--duration-fast) var(--ease-out);
+  }
+
+  .header__mobile-link--guide {
+    color: var(--color-amber-hover);
+    font-weight: var(--weight-bold);
+    background: var(--color-amber-glow);
   }
 
   .header__mobile-link:hover {

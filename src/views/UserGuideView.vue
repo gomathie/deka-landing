@@ -1,0 +1,1260 @@
+<template>
+  <div class="guide-layout">
+    <!-- Top Navigation Bar -->
+    <header class="guide-header">
+      <div class="guide-header__left">
+        <router-link to="/" class="guide-header__logo" aria-label="DEKA ERP Home">
+          <img src="/logos/logo-full-light.svg" alt="DEKA ERP" height="28" />
+        </router-link>
+        <span class="guide-header__badge">User Guide</span>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="guide-header__search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input
+          type="text"
+          v-model="searchQuery"
+          placeholder="Search features, modules, workflows... (Ctrl+K)"
+          ref="searchInputRef"
+          aria-label="Search User Guide"
+        />
+        <kbd class="guide-header__kbd">⌘K</kbd>
+      </div>
+
+      <div class="guide-header__right">
+        <router-link to="/" class="btn btn--secondary guide-header__btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          Marketing Site
+        </router-link>
+        <a href="https://cloud.dekaerp.com/admin/login" class="btn btn--ghost guide-header__signin">Sign In</a>
+        <a href="https://cloud.dekaerp.com" class="btn btn--primary guide-header__cta">Open Cloud App</a>
+
+        <!-- Mobile sidebar trigger -->
+        <button
+          class="guide-mobile-menu-btn"
+          @click="isMobileMenuOpen = !isMobileMenuOpen"
+          aria-label="Toggle navigation menu"
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Container: Sidebar + Content + On-page ToC -->
+    <div class="guide-body">
+      <!-- Backdrop for mobile drawer -->
+      <div
+        class="guide-sidebar-backdrop"
+        :class="{ 'guide-sidebar-backdrop--visible': isMobileMenuOpen }"
+        @click="isMobileMenuOpen = false"
+      ></div>
+
+      <!-- Left Sidebar: Categories & Guides -->
+      <aside class="guide-sidebar" :class="{ 'guide-sidebar--open': isMobileMenuOpen }">
+        <div class="guide-sidebar__header">
+          <span class="guide-sidebar__title">DEKA ERP Documentation</span>
+          <span class="guide-sidebar__subtitle">Step-by-step feature guides</span>
+        </div>
+
+        <nav class="guide-sidebar__nav">
+          <div v-for="category in filteredCategories" :key="category.id" class="guide-category">
+            <div class="guide-category__header">
+              <span class="guide-category__icon" v-html="category.icon"></span>
+              <span class="guide-category__title">{{ category.name }}</span>
+            </div>
+            <ul class="guide-category__list">
+              <li v-for="item in category.items" :key="item.id">
+                <button
+                  class="guide-nav-item"
+                  :class="{ 'guide-nav-item--active': activeSectionId === item.id }"
+                  @click="selectSection(item.id)"
+                >
+                  <span class="guide-nav-item__text">{{ item.title }}</span>
+                  <span v-if="item.badge" class="guide-nav-item__badge">{{ item.badge }}</span>
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          <div v-if="filteredCategories.length === 0" class="guide-sidebar__empty">
+            <p>No guides found matching "{{ searchQuery }}"</p>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- Central Content Pane -->
+      <main class="guide-content">
+        <div class="guide-content__inner" v-if="currentGuide">
+          <!-- Breadcrumb -->
+          <nav class="guide-breadcrumb" aria-label="Breadcrumb">
+            <router-link to="/">Home</router-link>
+            <span class="guide-breadcrumb__sep">/</span>
+            <router-link to="/guide">User Guide</router-link>
+            <span class="guide-breadcrumb__sep">/</span>
+            <span class="guide-breadcrumb__category">{{ currentCategoryName }}</span>
+            <span class="guide-breadcrumb__sep">/</span>
+            <span class="guide-breadcrumb__current">{{ currentGuide.title }}</span>
+          </nav>
+
+          <!-- Guide Header Banner -->
+          <header class="guide-doc-header">
+            <div class="guide-doc-header__tags">
+              <span class="badge">{{ currentCategoryName }}</span>
+              <span class="guide-read-time">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                {{ currentGuide.readTime || '6 min read' }}
+              </span>
+            </div>
+
+            <h1 class="guide-doc-title">{{ currentGuide.title }}</h1>
+            <p class="guide-doc-lead">{{ currentGuide.summary }}</p>
+
+            <!-- Workflow Summary Bar -->
+            <div v-if="currentGuide.workflow && currentGuide.workflow.length" class="guide-workflow-bar">
+              <div class="guide-workflow-bar__label">Workflow Pipeline:</div>
+              <div class="guide-workflow-steps">
+                <div
+                  v-for="(wfStep, idx) in currentGuide.workflow"
+                  :key="idx"
+                  class="guide-wf-step"
+                >
+                  <span class="guide-wf-step__num">{{ idx + 1 }}</span>
+                  <span class="guide-wf-step__name">{{ wfStep }}</span>
+                  <span v-if="idx < currentGuide.workflow.length - 1" class="guide-wf-step__arrow">→</span>
+                </div>
+              </div>
+            </div>
+          </header>
+
+          <!-- Step-by-Step Sections -->
+          <div class="guide-doc-body">
+            <section
+              v-for="(step, stepIndex) in currentGuide.steps"
+              :key="stepIndex"
+              :id="`step-${stepIndex + 1}`"
+              class="guide-step-section"
+            >
+              <div class="guide-step-header">
+                <div class="guide-step-pill">Step {{ stepIndex + 1 }}</div>
+                <h2 class="guide-step-title">{{ step.title }}</h2>
+              </div>
+
+              <div class="guide-step-content">
+                <p class="guide-step-desc">{{ step.description }}</p>
+
+                <!-- Detailed Sub-actions -->
+                <div v-if="step.instructions && step.instructions.length" class="guide-instructions-card">
+                  <div class="guide-instructions-header">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-amber)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="9 11 12 14 22 4"></polyline>
+                      <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                    </svg>
+                    <span>Action Checklist</span>
+                  </div>
+                  <ul class="guide-checklist">
+                    <li v-for="(inst, iIdx) in step.instructions" :key="iIdx">
+                      <span class="guide-check-bullet">{{ iIdx + 1 }}.</span>
+                      <div class="guide-check-text" v-html="inst"></div>
+                    </li>
+                  </ul>
+                </div>
+
+                <!-- Admin UI Mockup Box -->
+                <div v-if="step.uiPreview" class="guide-ui-preview">
+                  <div class="guide-ui-preview__bar">
+                    <div class="guide-ui-dots">
+                      <span></span><span></span><span></span>
+                    </div>
+                    <span class="guide-ui-title">{{ step.uiPreview.title || 'DEKA ERP Admin Panel' }}</span>
+                    <span class="guide-ui-pill">{{ step.uiPreview.module || 'Dashboard' }}</span>
+                  </div>
+                  <div class="guide-ui-preview__body">
+                    <div class="guide-ui-mock-header">
+                      <div class="guide-ui-mock-search">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <span>{{ step.uiPreview.searchPlaceholder || 'Search records...' }}</span>
+                      </div>
+                      <div class="guide-ui-mock-actions">
+                        <span v-for="action in step.uiPreview.topActions" :key="action" class="guide-ui-action-btn">{{ action }}</span>
+                      </div>
+                    </div>
+                    <!-- Mock Data Table or Form -->
+                    <div v-if="step.uiPreview.fields" class="guide-ui-fields-grid">
+                      <div v-for="field in step.uiPreview.fields" :key="field.label" class="guide-ui-field-item">
+                        <label>{{ field.label }}</label>
+                        <div class="guide-ui-input-box" :class="{ 'guide-ui-input-box--highlight': field.highlight }">{{ field.value }}</div>
+                      </div>
+                    </div>
+                    <div v-if="step.uiPreview.table" class="guide-ui-table-wrap">
+                      <table class="guide-ui-table">
+                        <thead>
+                          <tr>
+                            <th v-for="col in step.uiPreview.table.columns" :key="col">{{ col }}</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr v-for="(row, rIdx) in step.uiPreview.table.rows" :key="rIdx">
+                            <td v-for="(cell, cIdx) in row" :key="cIdx">
+                              <span :class="getCellClass(cell)">{{ cell }}</span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Pro-Tip / Important Callout -->
+                <div v-if="step.tip" class="guide-callout guide-callout--tip">
+                  <div class="guide-callout__icon">💡</div>
+                  <div class="guide-callout__body">
+                    <strong>Pro Tip:</strong> {{ step.tip }}
+                  </div>
+                </div>
+
+                <div v-if="step.note" class="guide-callout guide-callout--note">
+                  <div class="guide-callout__icon">ℹ️</div>
+                  <div class="guide-callout__body">
+                    <strong>Note:</strong> {{ step.note }}
+                  </div>
+                </div>
+
+                <div v-if="step.important" class="guide-callout guide-callout--important">
+                  <div class="guide-callout__icon">⚠️</div>
+                  <div class="guide-callout__body">
+                    <strong>Important:</strong> {{ step.important }}
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- Bottom Navigation (Prev / Next Guide) -->
+          <footer class="guide-footer-nav">
+            <button
+              v-if="prevGuide"
+              class="guide-nav-btn guide-nav-btn--prev"
+              @click="selectSection(prevGuide.id)"
+            >
+              <span class="guide-nav-btn__dir">← Previous Guide</span>
+              <span class="guide-nav-btn__name">{{ prevGuide.title }}</span>
+            </button>
+            <div v-else></div>
+
+            <button
+              v-if="nextGuide"
+              class="guide-nav-btn guide-nav-btn--next"
+              @click="selectSection(nextGuide.id)"
+            >
+              <span class="guide-nav-btn__dir">Next Guide →</span>
+              <span class="guide-nav-btn__name">{{ nextGuide.title }}</span>
+            </button>
+          </footer>
+        </div>
+      </main>
+
+      <!-- Right Table of Contents (On this page) -->
+      <aside class="guide-toc" v-if="currentGuide && currentGuide.steps.length">
+        <div class="guide-toc__inner">
+          <h4 class="guide-toc__title">On This Page</h4>
+          <ul class="guide-toc__list">
+            <li v-for="(step, idx) in currentGuide.steps" :key="idx">
+              <a :href="`#step-${idx + 1}`" class="guide-toc__link">
+                Step {{ idx + 1 }}: {{ step.title }}
+              </a>
+            </li>
+          </ul>
+
+          <div class="guide-toc__cloud-box">
+            <div class="guide-toc__cloud-title">Live Application</div>
+            <p class="guide-toc__cloud-desc">Ready to try these steps on your live DEKA instance?</p>
+            <a href="https://cloud.dekaerp.com" class="btn btn--primary btn--large guide-toc__cloud-btn">Open DEKA Cloud</a>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { guideCategories } from '../data/guideData.js'
+
+const route = useRoute()
+const router = useRouter()
+
+const searchQuery = ref('')
+const isMobileMenuOpen = ref(false)
+const searchInputRef = ref(null)
+
+// Flattened list of all guides for easy lookup and prev/next navigation
+const allGuides = computed(() => {
+  const list = []
+  guideCategories.forEach((cat) => {
+    cat.items.forEach((item) => {
+      list.push({ ...item, categoryName: cat.name })
+    })
+  })
+  return list
+})
+
+// Initialize active section from URL param or default to first guide
+const activeSectionId = ref(
+  (route.params.section || (allGuides.value[0] && allGuides.value[0].id))
+)
+
+watch(
+  () => route.params.section,
+  (newSec) => {
+    if (newSec) {
+      activeSectionId.value = newSec
+    }
+  }
+)
+
+const selectSection = (id) => {
+  activeSectionId.value = id
+  isMobileMenuOpen.value = false
+  router.push(`/guide/${id}`)
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+const currentGuide = computed(() => {
+  return allGuides.value.find((g) => g.id === activeSectionId.value) || allGuides.value[0]
+})
+
+const currentCategoryName = computed(() => {
+  const cat = guideCategories.find((c) =>
+    c.items.some((item) => item.id === activeSectionId.value)
+  )
+  return cat ? cat.name : 'Guides'
+})
+
+const currentGuideIndex = computed(() => {
+  return allGuides.value.findIndex((g) => g.id === activeSectionId.value)
+})
+
+const prevGuide = computed(() => {
+  const idx = currentGuideIndex.value
+  return idx > 0 ? allGuides.value[idx - 1] : null
+})
+
+const nextGuide = computed(() => {
+  const idx = currentGuideIndex.value
+  return idx >= 0 && idx < allGuides.value.length - 1 ? allGuides.value[idx + 1] : null
+})
+
+// Filter guides by search query
+const filteredCategories = computed(() => {
+  if (!searchQuery.value.trim()) return guideCategories
+
+  const q = searchQuery.value.toLowerCase().trim()
+  return guideCategories
+    .map((cat) => {
+      const filteredItems = cat.items.filter((item) => {
+        const inTitle = item.title.toLowerCase().includes(q)
+        const inSummary = item.summary && item.summary.toLowerCase().includes(q)
+        const inSteps = item.steps && item.steps.some(
+          (s) => s.title.toLowerCase().includes(q) || s.description.toLowerCase().includes(q)
+        )
+        return inTitle || inSummary || inSteps
+      })
+      return { ...cat, items: filteredItems }
+    })
+    .filter((cat) => cat.items.length > 0)
+})
+
+// Keyboard shortcut (Ctrl+K or Cmd+K) to focus search
+const handleKeydown = (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault()
+    if (searchInputRef.value) {
+      searchInputRef.value.focus()
+    }
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', handleKeydown)
+  if (route.params.section) {
+    activeSectionId.value = route.params.section
+  }
+})
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeydown)
+})
+
+const getCellClass = (cellValue) => {
+  if (typeof cellValue !== 'string') return ''
+  const lower = cellValue.toLowerCase()
+  if (lower === 'confirmed' || lower === 'active' || lower === 'paid' || lower === 'available') {
+    return 'guide-badge--success'
+  }
+  if (lower === 'pending' || lower === 'draft' || lower === 'quotation') {
+    return 'guide-badge--warning'
+  }
+  if (lower === 'cancelled' || lower === 'out of stock') {
+    return 'guide-badge--danger'
+  }
+  return ''
+}
+</script>
+
+<style scoped>
+.guide-layout {
+  min-height: 100vh;
+  background-color: var(--color-off-white);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Top Header ── */
+.guide-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: var(--header-height);
+  background: rgba(245, 246, 248, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-sand);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-8);
+  gap: var(--space-6);
+}
+
+@media (prefers-color-scheme: dark) {
+  .guide-header {
+    background: rgba(21, 27, 33, 0.95);
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.guide-header__left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-shrink: 0;
+}
+
+.guide-header__logo img {
+  height: 26px;
+  width: auto;
+}
+
+.guide-header__badge {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--color-amber-glow);
+  color: var(--color-amber-hover);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+}
+
+.guide-header__search {
+  position: relative;
+  max-width: 480px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.guide-header__search svg {
+  position: absolute;
+  left: var(--space-3);
+  color: var(--text-tertiary);
+  pointer-events: none;
+}
+
+.guide-header__search input {
+  width: 100%;
+  padding: var(--space-2) var(--space-10) var(--space-2) calc(var(--space-8) + 4px);
+  font-size: var(--text-sm);
+  font-family: inherit;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-sand);
+  background: var(--color-white);
+  color: var(--text-primary);
+  outline: none;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.guide-header__search input:focus {
+  border-color: var(--color-amber);
+  box-shadow: 0 0 0 3px var(--color-amber-glow);
+}
+
+.guide-header__kbd {
+  position: absolute;
+  right: var(--space-3);
+  font-size: var(--text-xs);
+  padding: 2px 6px;
+  background: var(--color-sand);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-family: monospace;
+  pointer-events: none;
+}
+
+.guide-header__right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+.guide-mobile-menu-btn {
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  padding: var(--space-2);
+}
+
+/* ── Guide Body Grid ── */
+.guide-body {
+  display: grid;
+  grid-template-columns: 290px minmax(0, 1fr) 250px;
+  max-width: 1560px;
+  width: 100%;
+  margin: 0 auto;
+  min-height: calc(100vh - var(--header-height));
+}
+
+/* ── Left Sidebar ── */
+.guide-sidebar {
+  position: sticky;
+  top: var(--header-height);
+  height: calc(100vh - var(--header-height));
+  overflow-y: auto;
+  border-right: 1px solid var(--color-sand);
+  padding: var(--space-6) var(--space-4) var(--space-12);
+  background: var(--color-white);
+}
+
+@media (prefers-color-scheme: dark) {
+  .guide-sidebar {
+    background: #182028;
+    border-right-color: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.guide-sidebar__header {
+  padding: 0 var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-sand);
+  margin-bottom: var(--space-4);
+}
+
+.guide-sidebar__title {
+  display: block;
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-amber);
+}
+
+.guide-sidebar__subtitle {
+  display: block;
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+
+.guide-sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.guide-category {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.guide-category__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+}
+
+.guide-category__icon {
+  display: flex;
+  align-items: center;
+  color: var(--color-amber);
+}
+
+.guide-category__list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.guide-nav-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  text-align: left;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.guide-nav-item:hover {
+  color: var(--text-primary);
+  background: var(--color-sand-light);
+}
+
+.guide-nav-item--active {
+  background: var(--color-amber-glow);
+  color: var(--color-amber-hover);
+  font-weight: var(--weight-semibold);
+}
+
+.guide-nav-item__badge {
+  font-size: 10px;
+  background: var(--color-amber);
+  color: var(--color-charcoal);
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+  font-weight: var(--weight-bold);
+}
+
+.guide-sidebar__empty {
+  padding: var(--space-6) var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--text-tertiary);
+  text-align: center;
+}
+
+/* ── Central Main Content ── */
+.guide-content {
+  padding: var(--space-8) var(--space-12) var(--space-24);
+  max-width: 880px;
+}
+
+.guide-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.guide-breadcrumb a {
+  color: var(--text-secondary);
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.guide-breadcrumb a:hover {
+  color: var(--color-amber);
+}
+
+.guide-breadcrumb__sep {
+  opacity: 0.4;
+}
+
+.guide-breadcrumb__current {
+  color: var(--text-primary);
+  font-weight: var(--weight-medium);
+}
+
+.guide-doc-header {
+  margin-bottom: var(--space-10);
+  padding-bottom: var(--space-8);
+  border-bottom: 1px solid var(--color-sand);
+}
+
+.guide-doc-header__tags {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.guide-read-time {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+}
+
+.guide-doc-title {
+  font-size: var(--text-4xl);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  margin-bottom: var(--space-4);
+  letter-spacing: -0.02em;
+}
+
+.guide-doc-lead {
+  font-size: var(--text-lg);
+  color: var(--text-secondary);
+  line-height: var(--leading-normal);
+}
+
+/* Workflow Pipeline Bar */
+.guide-workflow-bar {
+  margin-top: var(--space-6);
+  padding: var(--space-4);
+  background: var(--color-white);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-sand);
+}
+
+.guide-workflow-bar__label {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+  margin-bottom: var(--space-2);
+}
+
+.guide-workflow-steps {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.guide-wf-step {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+}
+
+.guide-wf-step__num {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-amber);
+  color: var(--color-charcoal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--weight-bold);
+  font-size: 10px;
+}
+
+.guide-wf-step__name {
+  color: var(--text-primary);
+}
+
+.guide-wf-step__arrow {
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+
+/* ── Step Section ── */
+.guide-step-section {
+  margin-bottom: var(--space-12);
+  padding-top: var(--space-4);
+}
+
+.guide-step-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.guide-step-pill {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  background: var(--color-charcoal);
+  color: var(--color-white);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+}
+
+@media (prefers-color-scheme: dark) {
+  .guide-step-pill {
+    background: var(--color-amber);
+    color: var(--color-charcoal);
+  }
+}
+
+.guide-step-title {
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-bold);
+}
+
+.guide-step-desc {
+  font-size: var(--text-base);
+  color: var(--text-secondary);
+  line-height: var(--leading-normal);
+  margin-bottom: var(--space-5);
+}
+
+/* Checklist / Action box */
+.guide-instructions-card {
+  background: var(--color-white);
+  border: 1px solid var(--color-sand);
+  border-left: 3px solid var(--color-amber);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  margin-bottom: var(--space-6);
+}
+
+.guide-instructions-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-3);
+}
+
+.guide-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.guide-checklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: var(--leading-snug);
+}
+
+.guide-check-bullet {
+  font-weight: var(--weight-bold);
+  color: var(--color-amber-hover);
+  flex-shrink: 0;
+}
+
+.guide-check-text strong {
+  color: var(--text-primary);
+}
+
+/* ── UI Preview Mockup Box ── */
+.guide-ui-preview {
+  background: #1B2228;
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  margin: var(--space-6) 0;
+  box-shadow: var(--shadow-lg);
+}
+
+.guide-ui-preview__bar {
+  background: #151A1F;
+  padding: var(--space-2) var(--space-4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.guide-ui-dots {
+  display: flex;
+  gap: 5px;
+}
+
+.guide-ui-dots span {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.guide-ui-title {
+  font-size: 11px;
+  color: var(--text-on-dark-muted);
+}
+
+.guide-ui-pill {
+  font-size: 10px;
+  background: var(--color-amber-glow);
+  color: var(--color-amber);
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+}
+
+.guide-ui-preview__body {
+  padding: var(--space-4);
+}
+
+.guide-ui-mock-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-3);
+  gap: var(--space-3);
+}
+
+.guide-ui-mock-search {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: #232B33;
+  padding: 4px var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: 11px;
+  color: var(--text-on-dark-muted);
+  width: 160px;
+}
+
+.guide-ui-mock-actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.guide-ui-action-btn {
+  font-size: 11px;
+  background: var(--color-amber);
+  color: var(--color-charcoal);
+  font-weight: var(--weight-bold);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.guide-ui-fields-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+
+.guide-ui-field-item label {
+  display: block;
+  font-size: 10px;
+  color: var(--text-on-dark-muted);
+  margin-bottom: 2px;
+  text-transform: uppercase;
+}
+
+.guide-ui-input-box {
+  background: #232B33;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-3);
+  font-size: 12px;
+  color: var(--text-on-dark);
+}
+
+.guide-ui-input-box--highlight {
+  border-color: var(--color-amber);
+  background: rgba(255, 159, 28, 0.08);
+}
+
+.guide-ui-table-wrap {
+  overflow-x: auto;
+}
+
+.guide-ui-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  color: var(--text-on-dark);
+}
+
+.guide-ui-table th {
+  text-align: left;
+  padding: var(--space-2) var(--space-3);
+  background: #151A1F;
+  color: var(--text-on-dark-muted);
+  font-weight: var(--weight-semibold);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.guide-ui-table td {
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.guide-badge--success {
+  color: #2ECC71;
+  background: rgba(46, 204, 113, 0.15);
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+}
+
+.guide-badge--warning {
+  color: var(--color-amber);
+  background: var(--color-amber-glow);
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+}
+
+.guide-badge--danger {
+  color: #E74C3C;
+  background: rgba(231, 76, 60, 0.15);
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+}
+
+/* ── Callout Banners ── */
+.guide-callout {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  margin: var(--space-4) 0;
+}
+
+.guide-callout--tip {
+  background: #FFF9EE;
+  border: 1px solid rgba(255, 159, 28, 0.3);
+  color: #7A4E00;
+}
+
+.guide-callout--note {
+  background: #EBF5FB;
+  border: 1px solid rgba(52, 152, 219, 0.3);
+  color: #1B4F72;
+}
+
+.guide-callout--important {
+  background: #FDF2E9;
+  border: 1px solid rgba(230, 126, 34, 0.3);
+  color: #7E3800;
+}
+
+@media (prefers-color-scheme: dark) {
+  .guide-callout--tip {
+    background: #2B2316;
+    color: #FFB84D;
+  }
+  .guide-callout--note {
+    background: #162430;
+    color: #85C1E9;
+  }
+  .guide-callout--important {
+    background: #2C1D13;
+    color: #F8C471;
+  }
+}
+
+/* ── Bottom Pagination ── */
+.guide-footer-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-16);
+  padding-top: var(--space-8);
+  border-top: 1px solid var(--color-sand);
+}
+
+.guide-nav-btn {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-3) var(--space-5);
+  background: var(--color-white);
+  border: 1px solid var(--color-sand);
+  border-radius: var(--radius-xl);
+  transition: all var(--duration-fast) var(--ease-out);
+  max-width: 320px;
+}
+
+.guide-nav-btn:hover {
+  border-color: var(--color-amber);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+.guide-nav-btn--next {
+  text-align: right;
+  margin-left: auto;
+}
+
+.guide-nav-btn__dir {
+  font-size: 11px;
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  color: var(--color-amber);
+}
+
+.guide-nav-btn__name {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+}
+
+/* ── Right Table of Contents ── */
+.guide-toc {
+  position: sticky;
+  top: var(--header-height);
+  height: calc(100vh - var(--header-height));
+  overflow-y: auto;
+  border-left: 1px solid var(--color-sand);
+  padding: var(--space-8) var(--space-6);
+  font-size: var(--text-xs);
+}
+
+@media (prefers-color-scheme: dark) {
+  .guide-toc {
+    border-left-color: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.guide-toc__title {
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+  margin-bottom: var(--space-4);
+}
+
+.guide-toc__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-8);
+}
+
+.guide-toc__link {
+  color: var(--text-secondary);
+  line-height: var(--leading-snug);
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.guide-toc__link:hover {
+  color: var(--color-amber);
+}
+
+.guide-toc__cloud-box {
+  background: var(--color-white);
+  padding: var(--space-5);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-sand);
+}
+
+.guide-toc__cloud-title {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  margin-bottom: var(--space-2);
+}
+
+.guide-toc__cloud-desc {
+  color: var(--text-tertiary);
+  line-height: var(--leading-snug);
+  margin-bottom: var(--space-4);
+}
+
+.guide-toc__cloud-btn {
+  width: 100%;
+  text-align: center;
+  font-size: var(--text-xs);
+  padding: var(--space-2) var(--space-4);
+}
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+  .guide-body {
+    grid-template-columns: 260px 1fr;
+  }
+  .guide-toc {
+    display: none;
+  }
+}
+
+@media (max-width: 860px) {
+  .guide-header {
+    padding: 0 var(--space-4);
+  }
+
+  .guide-header__search {
+    max-width: 220px;
+  }
+
+  .guide-header__signin,
+  .guide-header__btn {
+    display: none;
+  }
+
+  .guide-mobile-menu-btn {
+    display: block;
+  }
+
+  .guide-body {
+    grid-template-columns: 1fr;
+  }
+
+  .guide-sidebar {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    width: 280px;
+    height: calc(100vh - var(--header-height));
+    z-index: 90;
+    transform: translateX(-100%);
+    transition: transform var(--duration-normal) var(--ease-out);
+    box-shadow: var(--shadow-xl);
+  }
+
+  .guide-sidebar--open {
+    transform: translateX(0);
+  }
+
+  .guide-sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    top: var(--header-height);
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 80;
+  }
+
+  .guide-sidebar-backdrop--visible {
+    display: block;
+  }
+
+  .guide-content {
+    padding: var(--space-6) var(--space-4) var(--space-16);
+  }
+
+  .guide-doc-title {
+    font-size: var(--text-3xl);
+  }
+
+  .guide-ui-fields-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

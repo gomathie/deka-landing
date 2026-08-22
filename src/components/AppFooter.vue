@@ -2,19 +2,27 @@
   <footer class="footer" id="site-footer">
     <div class="container footer__inner">
       <div class="footer__brand">
-        <a href="/" aria-label="DEKA ERP Home">
+        <router-link to="/" aria-label="DEKA ERP Home">
           <img src="/logos/logo.svg" alt="DEKA" class="footer__logo" width="32" height="32" />
-        </a>
+        </router-link>
         <p class="footer__tagline">The all-in-one ERP for growing businesses.</p>
       </div>
 
       <div class="footer__links">
         <div class="footer__col">
           <h4 class="footer__col-title">Product</h4>
-          <a href="#features" class="footer__link">Features</a>
-          <a href="#benefits" class="footer__link">Benefits</a>
-          <a href="#multi-company" class="footer__link">Multi-Company</a>
-          <a href="#deployment" class="footer__link">Deployment</a>
+          <a href="/#features" class="footer__link">Features</a>
+          <a href="/#benefits" class="footer__link">Benefits</a>
+          <a href="/#multi-company" class="footer__link">Multi-Company</a>
+          <a href="/#deployment" class="footer__link">Deployment</a>
+        </div>
+        <div class="footer__col">
+          <h4 class="footer__col-title">Documentation</h4>
+          <router-link to="/guide/overview" class="footer__link">Platform Overview</router-link>
+          <router-link to="/guide/multi-company-guide" class="footer__link">Multi-Company Guide</router-link>
+          <router-link to="/guide/quotations-orders" class="footer__link">Sales &amp; Orders</router-link>
+          <router-link to="/guide/inventory-operations" class="footer__link">Inventory &amp; Barcode</router-link>
+          <router-link to="/guide" class="footer__link footer__link--highlight">Full User Guide →</router-link>
         </div>
         <div class="footer__col">
           <h4 class="footer__col-title">Access</h4>
@@ -73,6 +81,7 @@ const currentYear = new Date().getFullYear()
 .footer__links {
   display: flex;
   gap: var(--space-16);
+  flex-wrap: wrap;
 }
 
 .footer__col {
@@ -98,6 +107,11 @@ const currentYear = new Date().getFullYear()
 
 .footer__link:hover {
   color: var(--color-amber);
+}
+
+.footer__link--highlight {
+  color: var(--color-amber);
+  font-weight: var(--weight-semibold);
 }
 
 .footer__bottom {

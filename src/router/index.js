@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LandingView from '../views/LandingView.vue'
 import UserGuideView from '../views/UserGuideView.vue'
+import PrivacyPolicyView from '../views/PrivacyPolicyView.vue'
+import NotFoundView from '../views/NotFoundView.vue'
 
 const routes = [
   {
@@ -21,8 +23,16 @@ const routes = [
     ],
   },
   {
+    path: '/privacy',
+    name: 'PrivacyPolicy',
+    component: PrivacyPolicyView,
+    meta: { title: 'Privacy Policy — DEKA ERP' },
+  },
+  {
     path: '/:pathMatch(.*)*',
-    redirect: '/',
+    name: 'NotFound',
+    component: NotFoundView,
+    meta: { title: 'Page Not Found — DEKA ERP' },
   },
 ]
 

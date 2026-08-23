@@ -29,6 +29,10 @@
           <a href="https://cloud.dekaerp.com" class="footer__link">Get Started</a>
           <a href="https://cloud.dekaerp.com/admin/login" class="footer__link">Sign In</a>
         </div>
+        <div class="footer__col">
+          <h4 class="footer__col-title">Legal</h4>
+          <router-link to="/privacy" class="footer__link">Privacy Policy</router-link>
+        </div>
       </div>
 
       <div class="footer__bottom">

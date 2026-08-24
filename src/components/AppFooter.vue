@@ -32,6 +32,7 @@
         <div class="footer__col">
           <h4 class="footer__col-title">Legal</h4>
           <router-link to="/privacy" class="footer__link">Privacy Policy</router-link>
+          <router-link to="/sitemap" class="footer__link">Site Map</router-link>
         </div>
       </div>
 

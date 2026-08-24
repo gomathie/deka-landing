@@ -29,6 +29,12 @@ const routes = [
     meta: { title: 'Privacy Policy — DEKA ERP' },
   },
   {
+    path: '/sitemap',
+    name: 'SiteMap',
+    component: () => import('../views/SiteMapView.vue'),
+    meta: { title: 'Site Map — DEKA ERP' },
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
     component: NotFoundView,

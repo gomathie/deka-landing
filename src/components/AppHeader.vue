@@ -6,7 +6,14 @@
       </router-link>
 
       <nav class="header__nav" :class="{ 'header__nav--open': menuOpen }" id="main-nav" aria-label="Main navigation">
+        <!--
+          "/" is a prefix of every route, so the default inclusive active class
+          would light Home up everywhere. Divert it to an unstyled class and let
+          the exact-match class do the highlighting instead.
+        -->
+        <router-link to="/" class="header__link" active-class="header__link--root" @click="closeMenu">Home</router-link>
         <router-link to="/about" class="header__link" @click="closeMenu">About</router-link>
+        <router-link to="/pricing" class="header__link" @click="closeMenu">Pricing</router-link>
         <a :href="isHomePage ? '#benefits' : '/#benefits'" class="header__link" @click="closeMenu">Benefits</a>
         <a :href="isHomePage ? '#deployment' : '/#deployment'" class="header__link" @click="closeMenu">Deployment</a>
         <router-link to="/blog" class="header__link" @click="closeMenu">Blog</router-link>
@@ -39,7 +46,9 @@
     <!-- Mobile overlay -->
     <div class="header__overlay" :class="{ 'header__overlay--visible': menuOpen }" @click="closeMenu">
       <nav class="header__mobile-nav" @click.stop>
+        <router-link to="/" class="header__mobile-link" active-class="header__link--root" @click="closeMenu">Home</router-link>
         <router-link to="/about" class="header__mobile-link" @click="closeMenu">About</router-link>
+        <router-link to="/pricing" class="header__mobile-link" @click="closeMenu">Pricing</router-link>
         <a :href="isHomePage ? '#benefits' : '/#benefits'" class="header__mobile-link" @click="closeMenu">Benefits</a>
         <a :href="isHomePage ? '#deployment' : '/#deployment'" class="header__mobile-link" @click="closeMenu">Deployment</a>
         <router-link to="/blog" class="header__mobile-link" @click="closeMenu">Blog</router-link>
@@ -177,12 +186,16 @@ onUnmounted(() => {
 }
 
 .header__link:hover::after,
-.header__link.router-link-active::after {
+.header__link.router-link-active::after,
+.header__link.router-link-exact-active::after {
   width: 100%;
 }
 
-/* Route links (Blog, User Guide) mark themselves on their own section. */
-.header__link.router-link-active {
+/* Route links mark themselves on their own section. Blog and User Guide match
+   inclusively so they stay lit on /blog/:slug and /guide/:section; Home opts
+   out of that and uses the exact-match class instead. */
+.header__link.router-link-active,
+.header__link.router-link-exact-active {
   color: var(--text-primary);
   font-weight: var(--weight-semibold);
 }

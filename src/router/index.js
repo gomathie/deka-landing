@@ -32,6 +32,12 @@ const routes = [
     meta: { title: 'About — DEKA ERP' },
   },
   {
+    path: '/pricing',
+    name: 'Pricing',
+    component: () => import('../views/PricingView.vue'),
+    meta: { title: 'Pricing — DEKA ERP' },
+  },
+  {
     path: '/blog',
     name: 'Blog',
     component: () => import('../views/BlogView.vue'),

@@ -14,6 +14,7 @@
           <router-link to="/about" class="footer__link">About</router-link>
           <router-link to="/about#features" class="footer__link">Features</router-link>
           <router-link to="/about#multi-company" class="footer__link">Multi-Company</router-link>
+          <router-link to="/pricing" class="footer__link">Pricing</router-link>
           <a href="/#benefits" class="footer__link">Benefits</a>
           <a href="/#deployment" class="footer__link">Deployment</a>
           <router-link to="/blog" class="footer__link">Blog</router-link>
@@ -41,10 +42,7 @@
       <div class="footer__bottom">
         <p class="footer__copy">&copy; {{ currentYear }} DEKA ERP. All rights reserved.</p>
         <p class="footer__tech">
-          Built with
-          <a href="https://laravel.com" target="_blank" rel="noopener noreferrer" class="footer__tech-link">Laravel</a>
-          &amp;
-          <a href="https://filamentphp.com" target="_blank" rel="noopener noreferrer" class="footer__tech-link">Filament</a>
+          Built by the <span class="footer__tech-link">Smooth Operators</span>
         </p>
       </div>
     </div>
@@ -139,15 +137,10 @@ const currentYear = new Date().getFullYear()
   color: rgba(240, 237, 231, 0.3);
 }
 
+/* No longer a link — just the emphasised half of the credit line. */
 .footer__tech-link {
-  color: rgba(240, 237, 231, 0.5);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  transition: color var(--duration-fast) var(--ease-out);
-}
-
-.footer__tech-link:hover {
-  color: var(--color-amber);
+  color: rgba(240, 237, 231, 0.75);
+  font-weight: var(--weight-semibold);
 }
 
 @media (max-width: 640px) {

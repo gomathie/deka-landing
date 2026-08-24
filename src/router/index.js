@@ -1,8 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LandingView from '../views/LandingView.vue'
-import UserGuideView from '../views/UserGuideView.vue'
 import PrivacyPolicyView from '../views/PrivacyPolicyView.vue'
 import NotFoundView from '../views/NotFoundView.vue'
+
+// The guide ships the full reference documentation, so it is split out of
+// the landing bundle and fetched only when someone opens /guide.
+const UserGuideView = () => import('../views/UserGuideView.vue')
 
 const routes = [
   {

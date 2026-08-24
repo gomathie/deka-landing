@@ -27,7 +27,7 @@
         </p>
 
         <!-- Actions -->
-        <div class="notfound-actions">
+        <div class="notfound-actions btn-row">
           <router-link to="/" class="btn btn--primary btn--large notfound-btn">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>

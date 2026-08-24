@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Upstream user-guide checkout used by scripts/build-guide.cjs
+.docs-source

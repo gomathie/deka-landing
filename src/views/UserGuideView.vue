@@ -16,36 +16,42 @@
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
         <input
-          type="text"
+          type="search"
           v-model="searchQuery"
-          placeholder="Search features, modules, workflows... (Ctrl+K)"
+          placeholder="Search the documentation…"
           ref="searchInputRef"
           aria-label="Search User Guide"
         />
-        <kbd class="guide-header__kbd">⌘K</kbd>
+        <span v-if="searchQuery.trim()" class="guide-header__count">{{ resultCount }}</span>
+        <kbd v-else class="guide-header__kbd">Ctrl K</kbd>
       </div>
 
       <div class="guide-header__right">
-        <router-link to="/" class="btn btn--secondary guide-header__btn">
+        <router-link to="/" class="btn btn--secondary btn--sm guide-header__btn">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="19" y1="12" x2="5" y2="12"></line>
             <polyline points="12 19 5 12 12 5"></polyline>
           </svg>
-          Marketing Site
+          Main site
         </router-link>
-        <a href="https://cloud.dekaerp.com/admin/login" class="btn btn--ghost guide-header__signin">Sign In</a>
-        <a href="https://cloud.dekaerp.com" class="btn btn--primary guide-header__cta">Open Cloud App</a>
+        <a href="https://cloud.dekaerp.com/admin/login" class="btn btn--ghost btn--sm guide-header__signin">Sign in</a>
+        <a href="https://cloud.dekaerp.com" class="btn btn--primary btn--sm guide-header__cta">Open cloud app</a>
 
         <!-- Mobile sidebar trigger -->
         <button
-          class="guide-mobile-menu-btn"
+          class="btn btn--icon guide-mobile-menu-btn"
           @click="isMobileMenuOpen = !isMobileMenuOpen"
+          :aria-expanded="isMobileMenuOpen"
           aria-label="Toggle navigation menu"
         >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg v-if="!isMobileMenuOpen" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="3" y1="12" x2="21" y2="12"></line>
             <line x1="3" y1="6" x2="21" y2="6"></line>
             <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+          <svg v-else width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>
         </button>
       </div>
@@ -69,26 +75,40 @@
 
         <nav class="guide-sidebar__nav">
           <div v-for="category in filteredCategories" :key="category.id" class="guide-category">
-            <div class="guide-category__header">
+            <button
+              class="guide-category__header"
+              :class="{ 'guide-category__header--collapsed': !isCategoryOpen(category) }"
+              :aria-expanded="isCategoryOpen(category)"
+              @click="toggleCategory(category.id)"
+            >
               <span class="guide-category__icon" v-html="category.icon"></span>
               <span class="guide-category__title">{{ category.name }}</span>
-            </div>
-            <ul class="guide-category__list">
-              <li v-for="item in category.items" :key="item.id">
-                <button
-                  class="guide-nav-item"
-                  :class="{ 'guide-nav-item--active': activeSectionId === item.id }"
-                  @click="selectSection(item.id)"
-                >
-                  <span class="guide-nav-item__text">{{ item.title }}</span>
-                  <span v-if="item.badge" class="guide-nav-item__badge">{{ item.badge }}</span>
-                </button>
-              </li>
+              <span class="guide-category__count">{{ category.items.length }}</span>
+              <svg class="guide-category__chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+
+            <ul v-show="isCategoryOpen(category)" class="guide-category__list">
+              <template v-for="entry in groupItems(category.items)" :key="entry.key">
+                <li v-if="entry.type === 'group'" class="guide-group-label">{{ entry.name }}</li>
+                <li v-else>
+                  <button
+                    class="guide-nav-item"
+                    :class="{ 'guide-nav-item--active': activeSectionId === entry.item.id, 'guide-nav-item--nested': entry.item.group }"
+                    @click="selectSection(entry.item.id)"
+                  >
+                    <span class="guide-nav-item__text">{{ entry.item.title }}</span>
+                    <span v-if="entry.item.badge" class="guide-nav-item__badge">{{ entry.item.badge }}</span>
+                  </button>
+                </li>
+              </template>
             </ul>
           </div>
 
           <div v-if="filteredCategories.length === 0" class="guide-sidebar__empty">
-            <p>No guides found matching "{{ searchQuery }}"</p>
+            <p>No guides match “{{ searchQuery }}”.</p>
+            <button class="btn btn--ghost btn--sm" @click="searchQuery = ''">Clear search</button>
           </div>
         </nav>
       </aside>
@@ -103,6 +123,10 @@
             <router-link to="/guide">User Guide</router-link>
             <span class="guide-breadcrumb__sep">/</span>
             <span class="guide-breadcrumb__category">{{ currentCategoryName }}</span>
+            <template v-if="currentGuide.group">
+              <span class="guide-breadcrumb__sep">/</span>
+              <span class="guide-breadcrumb__category">{{ currentGuide.group }}</span>
+            </template>
             <span class="guide-breadcrumb__sep">/</span>
             <span class="guide-breadcrumb__current">{{ currentGuide.title }}</span>
           </nav>
@@ -144,7 +168,12 @@
           <div class="guide-doc-body">
             
             <!-- Render raw HTML from Aureus docs -->
-            <div v-if="currentGuide.htmlContent" class="guide-raw-html" v-html="currentGuide.htmlContent"></div>
+            <div
+              v-if="currentGuide.htmlContent"
+              class="guide-raw-html"
+              v-html="currentGuide.htmlContent"
+              @click="handleContentClick"
+            ></div>
             <template v-if="currentGuide.steps">
               <section
                 v-for="(step, stepIndex) in currentGuide.steps"
@@ -273,21 +302,26 @@
       </main>
 
       <!-- Right Table of Contents (On this page) -->
-      <aside class="guide-toc" v-if="currentGuide && currentGuide.steps && currentGuide.steps.length">
+      <aside class="guide-toc">
         <div class="guide-toc__inner">
-          <h4 class="guide-toc__title">On This Page</h4>
-          <ul class="guide-toc__list">
-            <li v-for="(step, idx) in currentGuide.steps" :key="idx">
-              <a :href="`#step-${idx + 1}`" class="guide-toc__link">
-                Step {{ idx + 1 }}: {{ step.title }}
-              </a>
-            </li>
-          </ul>
+          <template v-if="pageOutline.length">
+            <h4 class="guide-toc__title">On This Page</h4>
+            <ul class="guide-toc__list">
+              <li v-for="entry in pageOutline" :key="entry.id">
+                <a
+                  :href="`#${entry.id}`"
+                  class="guide-toc__link"
+                  :class="{ 'guide-toc__link--active': activeHeading === entry.id }"
+                  @click.prevent="jumpTo(entry.id)"
+                >{{ entry.text }}</a>
+              </li>
+            </ul>
+          </template>
 
           <div class="guide-toc__cloud-box">
-            <div class="guide-toc__cloud-title">Live Application</div>
-            <p class="guide-toc__cloud-desc">Ready to try these steps on your live DEKA instance?</p>
-            <a href="https://cloud.dekaerp.com" class="btn btn--primary btn--large guide-toc__cloud-btn">Open DEKA Cloud</a>
+            <div class="guide-toc__cloud-title">Live application</div>
+            <p class="guide-toc__cloud-desc">Ready to try these steps on your own DEKA instance?</p>
+            <a href="https://cloud.dekaerp.com" class="btn btn--primary btn--block guide-toc__cloud-btn">Open DEKA Cloud</a>
           </div>
         </div>
       </aside>
@@ -296,7 +330,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { guideCategories } from '../data/guideData.js'
 
@@ -343,12 +377,82 @@ const currentGuide = computed(() => {
   return allGuides.value.find((g) => g.id === activeSectionId.value) || allGuides.value[0]
 })
 
-const currentCategoryName = computed(() => {
-  const cat = guideCategories.find((c) =>
-    c.items.some((item) => item.id === activeSectionId.value)
-  )
-  return cat ? cat.name : 'Guides'
+const currentCategory = computed(() =>
+  guideCategories.find((c) => c.items.some((item) => item.id === currentGuide.value?.id))
+)
+
+const currentCategoryName = computed(() => currentCategory.value?.name || 'Guides')
+
+/* ── Sidebar: collapsible modules with sub-group headings ── */
+
+// Start with every module folded away — the watcher below opens the one
+// holding the current page. With ~80 pages an all-open sidebar is unusable.
+const collapsedCategories = ref(new Set(guideCategories.map((c) => c.id)))
+
+const isCategoryOpen = (category) => {
+  // While searching, everything with a hit stays open.
+  if (searchQuery.value.trim()) return true
+  return !collapsedCategories.value.has(category.id)
+}
+
+const toggleCategory = (id) => {
+  const next = new Set(collapsedCategories.value)
+  if (next.has(id)) next.delete(id)
+  else next.add(id)
+  collapsedCategories.value = next
+}
+
+/**
+ * Imported reference pages carry the sub-section they live under
+ * (Invoices > Customers > Products). Emit a heading row whenever that
+ * sub-section changes so the sidebar mirrors the product's own menu.
+ */
+const groupItems = (items) => {
+  const rows = []
+  let lastGroup = null
+  items.forEach((item) => {
+    if (item.group && item.group !== lastGroup) {
+      rows.push({ type: 'group', name: item.group, key: `g-${item.group}-${item.id}` })
+    }
+    lastGroup = item.group || null
+    rows.push({ type: 'item', item, key: item.id })
+  })
+  return rows
+}
+
+/* ── On-page outline ── */
+
+const pageOutline = computed(() => {
+  const guide = currentGuide.value
+  if (!guide) return []
+  if (guide.toc && guide.toc.length) return guide.toc
+  if (guide.steps && guide.steps.length) {
+    return guide.steps.map((step, idx) => ({
+      id: `step-${idx + 1}`,
+      text: `Step ${idx + 1}: ${step.title}`,
+    }))
+  }
+  return []
 })
+
+const activeHeading = ref('')
+
+const jumpTo = (id) => {
+  const el = document.getElementById(id)
+  if (!el) return
+  const top = el.getBoundingClientRect().top + window.scrollY - 96
+  window.scrollTo({ top, behavior: 'smooth' })
+  history.replaceState(null, '', `#${id}`)
+}
+
+const syncActiveHeading = () => {
+  let current = ''
+  for (const entry of pageOutline.value) {
+    const el = document.getElementById(entry.id)
+    if (el && el.getBoundingClientRect().top <= 140) current = entry.id
+  }
+  activeHeading.value = current || (pageOutline.value[0]?.id ?? '')
+}
 
 const currentGuideIndex = computed(() => {
   return allGuides.value.findIndex((g) => g.id === activeSectionId.value)
@@ -373,36 +477,90 @@ const filteredCategories = computed(() => {
     .map((cat) => {
       const filteredItems = cat.items.filter((item) => {
         const inTitle = item.title.toLowerCase().includes(q)
+        const inGroup = item.group && item.group.toLowerCase().includes(q)
         const inSummary = item.summary && item.summary.toLowerCase().includes(q)
-        const inSteps = item.steps && item.steps.some(
-          (s) => s.title.toLowerCase().includes(q) || s.description.toLowerCase().includes(q)
-        )
-        return inTitle || inSummary || inSteps
+        const inSteps =
+          item.steps &&
+          item.steps.some(
+            (s) => s.title.toLowerCase().includes(q) || s.description.toLowerCase().includes(q)
+          )
+        const inHeadings = item.toc && item.toc.some((t) => t.text.toLowerCase().includes(q))
+        const inBody = item.htmlContent && item.htmlContent.toLowerCase().includes(q)
+        return inTitle || inGroup || inSummary || inSteps || inHeadings || inBody
       })
       return { ...cat, items: filteredItems }
     })
     .filter((cat) => cat.items.length > 0)
 })
 
+const resultCount = computed(() =>
+  filteredCategories.value.reduce((sum, cat) => sum + cat.items.length, 0)
+)
+
 // Keyboard shortcut (Ctrl+K or Cmd+K) to focus search
 const handleKeydown = (e) => {
-  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
     e.preventDefault()
-    if (searchInputRef.value) {
-      searchInputRef.value.focus()
-    }
+    searchInputRef.value?.focus()
+    searchInputRef.value?.select()
+    return
+  }
+  if (e.key === 'Escape') {
+    if (isMobileMenuOpen.value) isMobileMenuOpen.value = false
+    else if (document.activeElement === searchInputRef.value) searchInputRef.value.blur()
+  }
+}
+
+// Keep only the active module expanded when navigating to a new page, so a
+// 80-page sidebar stays scannable.
+watch(currentCategory, (cat) => {
+  if (!cat) return
+  const next = new Set(collapsedCategories.value)
+  next.delete(cat.id)
+  collapsedCategories.value = next
+})
+
+watch(
+  currentGuide,
+  (guide) => {
+    if (guide) document.title = `${guide.title} — DEKA ERP User Guide`
+    activeHeading.value = pageOutline.value[0]?.id ?? ''
+    nextTick(syncActiveHeading)
+  },
+  { immediate: true }
+)
+
+// Intercept clicks on links inside imported documentation so cross-references
+// between guides stay client-side.
+const handleContentClick = (e) => {
+  const anchor = e.target.closest('a')
+  if (!anchor) return
+  const href = anchor.getAttribute('href') || ''
+  if (href.startsWith('/guide/')) {
+    e.preventDefault()
+    selectSection(href.replace('/guide/', '').split('#')[0])
+  } else if (href.startsWith('#')) {
+    e.preventDefault()
+    jumpTo(href.slice(1))
+  } else if (/^https?:/.test(href)) {
+    anchor.target = '_blank'
+    anchor.rel = 'noopener noreferrer'
   }
 }
 
 onMounted(() => {
   window.addEventListener('keydown', handleKeydown)
+  window.addEventListener('scroll', syncActiveHeading, { passive: true })
   if (route.params.section) {
     activeSectionId.value = route.params.section
   }
+  nextTick(syncActiveHeading)
 })
 
 onUnmounted(() => {
   window.removeEventListener('keydown', handleKeydown)
+  window.removeEventListener('scroll', syncActiveHeading)
+  document.title = 'DEKA ERP'
 })
 
 const getCellClass = (cellValue) => {
@@ -509,16 +667,30 @@ const getCellClass = (cellValue) => {
   box-shadow: 0 0 0 3px var(--color-amber-glow);
 }
 
-.guide-header__kbd {
+.guide-header__kbd,
+.guide-header__count {
   position: absolute;
   right: var(--space-3);
-  font-size: var(--text-xs);
-  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: var(--weight-semibold);
+  padding: 3px 7px;
   background: var(--color-sand);
+  border: 1px solid transparent;
   border-radius: var(--radius-sm);
   color: var(--text-secondary);
-  font-family: monospace;
+  letter-spacing: 0.02em;
   pointer-events: none;
+}
+
+.guide-header__count {
+  background: var(--color-amber-glow);
+  color: var(--color-amber-hover);
+}
+
+/* Chrome/Safari draw their own clear button on type=search. */
+.guide-header__search input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .guide-header__right {
@@ -530,10 +702,6 @@ const getCellClass = (cellValue) => {
 
 .guide-mobile-menu-btn {
   display: none;
-  background: transparent;
-  border: none;
-  color: var(--text-primary);
-  padding: var(--space-2);
 }
 
 /* ── Guide Body Grid ── */
@@ -603,15 +771,24 @@ const getCellClass = (cellValue) => {
 }
 
 .guide-category__header {
+  width: 100%;
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-1) var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
   font-size: var(--text-xs);
   font-weight: var(--weight-bold);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--text-tertiary);
+  transition: background-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+.guide-category__header:hover {
+  background: var(--color-sand-light);
+  color: var(--text-secondary);
 }
 
 .guide-category__icon {
@@ -620,23 +797,64 @@ const getCellClass = (cellValue) => {
   color: var(--color-amber);
 }
 
+.guide-category__title {
+  flex: 1;
+  text-align: left;
+}
+
+.guide-category__count {
+  font-size: 10px;
+  font-weight: var(--weight-semibold);
+  color: var(--text-tertiary);
+  background: var(--color-sand-light);
+  border-radius: var(--radius-full);
+  padding: 1px 6px;
+  letter-spacing: 0;
+}
+
+.guide-category__chevron {
+  color: var(--text-tertiary);
+  transition: transform var(--duration-normal) var(--ease-out);
+}
+
+.guide-category__header--collapsed .guide-category__chevron {
+  transform: rotate(-90deg);
+}
+
 .guide-category__list {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  padding-left: var(--space-3);
+  margin-left: var(--space-4);
+  border-left: 1px solid var(--color-sand);
+}
+
+/* Sub-section heading inside a module (Invoices > Customers > …) */
+.guide-group-label {
+  padding: var(--space-3) var(--space-3) var(--space-1);
+  font-size: 10px;
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
 }
 
 .guide-nav-item {
+  position: relative;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: var(--space-2);
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-md);
   text-align: left;
   font-size: var(--text-sm);
+  line-height: 1.35;
   color: var(--text-secondary);
-  transition: all var(--duration-fast) var(--ease-out);
+  transition: background-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
 }
 
 .guide-nav-item:hover {
@@ -648,6 +866,18 @@ const getCellClass = (cellValue) => {
   background: var(--color-amber-glow);
   color: var(--color-amber-hover);
   font-weight: var(--weight-semibold);
+}
+
+.guide-nav-item--active::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--space-3) * -1 - 1px);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2px;
+  height: 18px;
+  border-radius: var(--radius-full);
+  background: var(--color-amber);
 }
 
 .guide-nav-item__badge {
@@ -1167,70 +1397,259 @@ const getCellClass = (cellValue) => {
 .guide-toc__list {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
   margin-bottom: var(--space-8);
 }
 
+/* ──────────────────────────────────────────────
+   Imported reference documentation
+
+   This markup is injected with v-html, so it never carries the
+   scoped-style attribute — every rule below has to go through
+   :deep() to reach it.
+   ────────────────────────────────────────────── */
+
 .guide-raw-html {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
   color: var(--text-secondary);
-  line-height: var(--leading-relaxed);
+  font-size: var(--text-base);
+  line-height: 1.7;
 }
 
-.guide-raw-html h1,
-.guide-raw-html h2,
-.guide-raw-html h3 {
+.guide-raw-html :deep(> *:first-child) {
+  margin-top: 0;
+}
+
+/* ── Headings ── */
+
+.guide-raw-html :deep(.doc-heading) {
+  position: relative;
   color: var(--text-primary);
-  margin-top: var(--space-6);
-  margin-bottom: var(--space-2);
+  scroll-margin-top: calc(var(--header-height) + var(--space-6));
 }
 
-.guide-raw-html h1 { font-size: var(--text-2xl); }
-.guide-raw-html h2 { font-size: var(--text-xl); border-bottom: 1px solid var(--color-sand); padding-bottom: var(--space-2); }
-.guide-raw-html h3 { font-size: var(--text-lg); }
-
-.guide-raw-html p {
-  margin-bottom: var(--space-4);
-}
-
-.guide-raw-html ul, 
-.guide-raw-html ol {
-  padding-left: var(--space-6);
-  margin-bottom: var(--space-4);
-}
-
-.guide-raw-html li {
-  margin-bottom: var(--space-2);
-}
-
-.guide-raw-html blockquote {
-  border-left: 4px solid var(--color-amber);
-  padding-left: var(--space-4);
-  background: var(--color-sand-light);
-  padding-top: var(--space-3);
+.guide-raw-html :deep(.doc-heading--h2) {
+  font-size: var(--text-2xl);
+  margin: var(--space-12) 0 var(--space-4);
   padding-bottom: var(--space-3);
-  border-radius: 0 var(--radius-md) var(--radius-md) 0;
-  margin-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-sand);
 }
 
-.guide-raw-html code {
-  background: var(--color-sand);
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-family: monospace;
-  font-size: 0.9em;
+.guide-raw-html :deep(.doc-heading--h3) {
+  font-size: var(--text-lg);
+  margin: var(--space-8) 0 var(--space-3);
+}
+
+.guide-raw-html :deep(h4) {
+  font-size: var(--text-base);
+  color: var(--text-primary);
+  margin: var(--space-6) 0 var(--space-2);
+}
+
+.guide-raw-html :deep(.doc-anchor) {
+  position: absolute;
+  margin-left: var(--space-2);
+  color: var(--color-amber);
+  font-weight: var(--weight-normal);
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+
+.guide-raw-html :deep(.doc-heading:hover .doc-anchor),
+.guide-raw-html :deep(.doc-anchor:focus-visible) {
+  opacity: 1;
+}
+
+/* ── Body copy ── */
+
+.guide-raw-html :deep(p) {
+  margin: 0 0 var(--space-4);
+}
+
+.guide-raw-html :deep(strong) {
+  color: var(--text-primary);
+  font-weight: var(--weight-semibold);
+}
+
+.guide-raw-html :deep(a) {
+  color: var(--color-amber-hover);
+  font-weight: var(--weight-medium);
+  text-decoration: underline;
+  text-decoration-color: var(--color-amber-glow);
+  text-underline-offset: 3px;
+  transition: text-decoration-color var(--duration-fast) var(--ease-out);
+}
+
+.guide-raw-html :deep(a:hover) {
+  text-decoration-color: currentColor;
+}
+
+.guide-raw-html :deep(hr) {
+  border: none;
+  border-top: 1px solid var(--color-sand);
+  margin: var(--space-10) 0;
+}
+
+/* ── Lists ── */
+
+.guide-raw-html :deep(ul),
+.guide-raw-html :deep(ol) {
+  margin: 0 0 var(--space-4);
+  padding-left: var(--space-6);
+  list-style: revert;
+}
+
+.guide-raw-html :deep(li) {
+  margin-bottom: var(--space-2);
+  padding-left: var(--space-1);
+}
+
+.guide-raw-html :deep(li::marker) {
+  color: var(--color-amber);
+  font-weight: var(--weight-semibold);
+}
+
+.guide-raw-html :deep(li > ul),
+.guide-raw-html :deep(li > ol) {
+  margin-top: var(--space-2);
+}
+
+/* ── Code & navigation paths ── */
+
+.guide-raw-html :deep(code) {
+  background: var(--color-sand-light);
+  border: 1px solid var(--color-sand);
+  padding: 0.1em 0.4em;
+  border-radius: var(--radius-sm);
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
+  font-size: 0.875em;
+  color: var(--text-primary);
+}
+
+.guide-raw-html :deep(pre) {
+  background: var(--color-charcoal);
+  color: var(--color-sand-light);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-sm);
+}
+
+.guide-raw-html :deep(pre code) {
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+}
+
+/* `Sales → Orders → Quotations` — a menu path, not code. */
+.guide-raw-html :deep(.doc-path) {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  background: var(--color-amber-glow);
+  color: var(--color-amber-hover);
+  padding: 0.15em 0.6em;
+  border-radius: var(--radius-full);
+  font-size: 0.875em;
+  font-weight: var(--weight-semibold);
+  white-space: nowrap;
+}
+
+/* ── Callouts ── */
+
+.guide-raw-html :deep(.doc-callout) {
+  --callout-accent: var(--color-warm-gray);
+  --callout-tint: var(--color-sand-light);
+
+  display: grid;
+  gap: var(--space-1);
+  margin: 0 0 var(--space-5);
+  padding: var(--space-4) var(--space-5);
+  background: var(--callout-tint);
+  border-left: 3px solid var(--callout-accent);
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+}
+
+.guide-raw-html :deep(.doc-callout > *:last-child > *:last-child) {
+  margin-bottom: 0;
+}
+
+.guide-raw-html :deep(.doc-callout__label) {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--callout-accent);
+}
+
+.guide-raw-html :deep(.doc-callout--tip) {
+  --callout-accent: #2E9E6B;
+  --callout-tint: rgba(46, 158, 107, 0.08);
+}
+
+.guide-raw-html :deep(.doc-callout--important) {
+  --callout-accent: #D14343;
+  --callout-tint: rgba(209, 67, 67, 0.08);
+}
+
+.guide-raw-html :deep(.doc-callout--note),
+.guide-raw-html :deep(.doc-callout--next) {
+  --callout-accent: var(--color-amber-hover);
+  --callout-tint: var(--color-amber-glow);
+}
+
+/* ── Tables ── */
+
+.guide-raw-html :deep(.doc-table-wrap) {
+  overflow-x: auto;
+  margin: 0 0 var(--space-6);
+  border: 1px solid var(--color-sand);
+  border-radius: var(--radius-lg);
+  -webkit-overflow-scrolling: touch;
+}
+
+.guide-raw-html :deep(table) {
+  width: 100%;
+  min-width: 480px;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+.guide-raw-html :deep(th) {
+  text-align: left;
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+  background: var(--color-sand-light);
+  padding: var(--space-3) var(--space-4);
+  white-space: nowrap;
+}
+
+.guide-raw-html :deep(td) {
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--color-sand);
+  vertical-align: top;
 }
 
 .guide-toc__link {
+  display: block;
+  padding: var(--space-1) 0 var(--space-1) var(--space-3);
+  border-left: 2px solid var(--color-sand);
+  font-size: var(--text-sm);
   color: var(--text-secondary);
   line-height: var(--leading-snug);
-  transition: color var(--duration-fast) var(--ease-out);
+  transition: color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
 }
 
 .guide-toc__link:hover {
   color: var(--color-amber);
+  border-left-color: var(--color-amber-light);
+}
+
+.guide-toc__link--active {
+  color: var(--color-amber-hover);
+  border-left-color: var(--color-amber);
+  font-weight: var(--weight-semibold);
 }
 
 .guide-toc__cloud-box {
@@ -1253,10 +1672,7 @@ const getCellClass = (cellValue) => {
 }
 
 .guide-toc__cloud-btn {
-  width: 100%;
-  text-align: center;
-  font-size: var(--text-xs);
-  padding: var(--space-2) var(--space-4);
+  --btn-font-size: var(--text-xs);
 }
 
 /* ── Responsive ── */

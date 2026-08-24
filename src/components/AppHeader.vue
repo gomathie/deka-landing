@@ -180,21 +180,31 @@ onUnmounted(() => {
 .header__burger {
   display: none;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
   gap: 5px;
-  width: 32px;
-  height: 32px;
-  padding: 4px;
+  width: 44px;
+  height: 44px;
+  margin-right: calc(var(--space-2) * -1);
+  border-radius: var(--radius-lg);
   z-index: 110;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.header__burger:active {
+  background-color: var(--color-sand-light);
 }
 
 .header__burger span {
   display: block;
-  width: 100%;
+  width: 20px;
   height: 2px;
   background-color: var(--text-primary);
   border-radius: var(--radius-full);
-  transition: all var(--duration-normal) var(--ease-out);
+  transition:
+    transform var(--duration-normal) var(--ease-out),
+    opacity var(--duration-fast) var(--ease-out);
   transform-origin: center;
 }
 

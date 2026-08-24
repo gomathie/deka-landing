@@ -104,67 +104,205 @@ h1, h2, h3, h4, h5, h6 {
   background-clip: text;
 }
 
-/* ── Buttons ── */
+/* ──────────────────────────────────────────────
+   Buttons
+   One base + variants + sizes. Every button keeps a
+   44px minimum hit area on touch pointers.
+   ────────────────────────────────────────────── */
+
 .btn {
+  --btn-height: 2.75rem;
+  --btn-padding-x: var(--space-6);
+  --btn-font-size: var(--text-sm);
+  --btn-bg: transparent;
+  --btn-fg: var(--text-primary);
+  --btn-border: transparent;
+  --btn-shadow: none;
+  --btn-ring: var(--color-amber-glow);
+
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  padding: var(--space-3) var(--space-6);
+  min-height: var(--btn-height);
+  padding: var(--space-2) var(--btn-padding-x);
   font-family: var(--font-body);
-  font-size: var(--text-sm);
+  font-size: var(--btn-font-size);
   font-weight: var(--weight-semibold);
-  line-height: 1;
-  border-radius: var(--radius-full);
-  transition: all var(--duration-normal) var(--ease-out);
+  letter-spacing: -0.005em;
+  line-height: 1.1;
+  text-align: center;
   white-space: nowrap;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--btn-border);
+  background-color: var(--btn-bg);
+  color: var(--btn-fg);
+  box-shadow: var(--btn-shadow);
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-normal) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
 }
+
+.btn > svg {
+  flex-shrink: 0;
+}
+
+.btn:focus-visible {
+  outline: none;
+  box-shadow: var(--btn-shadow), 0 0 0 3px var(--btn-ring);
+}
+
+.btn:active {
+  transform: translateY(0) scale(0.985);
+}
+
+.btn[disabled],
+.btn[aria-disabled='true'] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* ── Variants ── */
 
 .btn--primary {
-  background-color: var(--color-amber);
-  color: var(--color-charcoal);
-  box-shadow: var(--shadow-sm);
-}
-
-.btn--primary:hover {
-  background-color: var(--color-amber-hover);
-  box-shadow: var(--shadow-amber);
-  transform: translateY(-1px);
+  --btn-bg: var(--color-amber);
+  --btn-fg: var(--color-charcoal);
+  --btn-border: var(--color-amber);
+  --btn-shadow: 0 1px 2px rgba(31, 41, 51, 0.12);
 }
 
 .btn--secondary {
-  background-color: transparent;
+  --btn-fg: var(--text-primary);
+  --btn-border: var(--color-sand);
+  --btn-bg: var(--color-white);
+}
+
+.btn--ghost {
+  --btn-fg: var(--color-amber-hover);
+  --btn-padding-x: var(--space-4);
+}
+
+/* Quiet neutral action — menus, toolbars, secondary rows. */
+.btn--subtle {
+  --btn-fg: var(--text-secondary);
+  --btn-padding-x: var(--space-4);
+}
+
+.btn--icon {
+  --btn-padding-x: 0;
+  width: var(--btn-height);
+  border-radius: var(--radius-lg);
   color: var(--text-primary);
-  border: 1.5px solid var(--color-sand);
+}
+
+@media (hover: hover) {
+  .btn--primary:hover {
+    --btn-bg: var(--color-amber-hover);
+    --btn-border: var(--color-amber-hover);
+    --btn-shadow: var(--shadow-amber);
+    transform: translateY(-1px);
+  }
+
+  .btn--secondary:hover {
+    --btn-border: var(--color-amber);
+    --btn-fg: var(--color-amber-hover);
+    --btn-bg: var(--color-amber-glow);
+  }
+
+  .btn--ghost:hover,
+  .btn--subtle:hover {
+    --btn-bg: var(--color-amber-glow);
+    --btn-fg: var(--color-amber-hover);
+  }
+
+  .btn--icon:hover {
+    --btn-bg: var(--color-sand-light);
+  }
 }
 
 @media (prefers-color-scheme: dark) {
   .btn--secondary {
-    border-color: rgba(255, 255, 255, 0.15);
+    --btn-border: rgba(255, 255, 255, 0.16);
+    --btn-bg: rgba(255, 255, 255, 0.03);
+    --btn-fg: var(--text-on-dark);
+  }
+
+  .btn--primary {
+    --btn-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  }
+
+  .btn--icon {
     color: var(--text-on-dark);
   }
 }
 
-.btn--secondary:hover {
-  border-color: var(--color-amber);
-  color: var(--color-amber);
-  background-color: var(--color-amber-glow);
+/* ── Sizes ── */
+
+.btn--sm {
+  --btn-height: 2.25rem;
+  --btn-padding-x: var(--space-4);
+  --btn-font-size: var(--text-xs);
 }
 
+.btn--lg,
 .btn--large {
-  padding: var(--space-4) var(--space-8);
-  font-size: var(--text-base);
-  border-radius: var(--radius-full);
+  --btn-height: 3.25rem;
+  --btn-padding-x: var(--space-8);
+  --btn-font-size: var(--text-base);
 }
 
-.btn--ghost {
-  background: transparent;
-  color: var(--color-amber);
-  padding: var(--space-2) var(--space-4);
+.btn--block {
+  display: flex;
+  width: 100%;
 }
 
-.btn--ghost:hover {
-  background-color: var(--color-amber-glow);
+/* Touch pointers get a comfortable target regardless of size modifier. */
+@media (pointer: coarse) {
+  .btn {
+    --btn-height: 2.875rem;
+  }
+
+  .btn--sm {
+    --btn-height: 2.5rem;
+  }
+}
+
+/* A row of buttons that stacks to full width on narrow screens. */
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+@media (max-width: 520px) {
+  .btn-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+
+  .btn-row > .btn {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn {
+    transition-duration: 1ms;
+  }
+
+  .btn:hover,
+  .btn:active {
+    transform: none;
+  }
 }
 
 /* ── Animations ── */

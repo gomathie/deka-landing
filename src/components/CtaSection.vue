@@ -7,7 +7,7 @@
         <p class="cta__subtitle">
           Get started with DEKA ERP today. No credit card required.
         </p>
-        <div class="cta__actions">
+        <div class="cta__actions btn-row">
           <a href="https://cloud.dekaerp.com" class="btn btn--primary btn--large cta__btn" id="cta-primary">
             Get Started Free
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -61,35 +61,42 @@
 }
 
 .cta__actions {
-  display: flex;
   justify-content: center;
   gap: var(--space-4);
 }
 
+/* This section always sits on the dark panel, so the outline button uses
+   the on-dark palette regardless of the visitor's colour scheme. */
 .cta__btn--outline {
-  border-color: rgba(255, 255, 255, 0.2);
-  color: var(--text-on-dark);
+  --btn-border: rgba(255, 255, 255, 0.22);
+  --btn-bg: rgba(255, 255, 255, 0.04);
+  --btn-fg: var(--text-on-dark);
+  --btn-ring: rgba(255, 159, 28, 0.35);
 }
 
-.cta__btn--outline:hover {
-  border-color: var(--color-amber);
-  color: var(--color-amber);
-  background: rgba(255, 159, 28, 0.1);
+@media (hover: hover) {
+  .cta__btn--outline:hover {
+    --btn-border: var(--color-amber);
+    --btn-fg: var(--color-amber);
+    --btn-bg: rgba(255, 159, 28, 0.12);
+  }
 }
 
 @media (max-width: 640px) {
   .cta__title {
     font-size: var(--text-3xl);
   }
+}
 
+/* `.btn-row` stacks the buttons below 520px — cap the width so they stay
+   visually anchored to the centred copy. */
+@media (max-width: 520px) {
   .cta__actions {
-    flex-direction: column;
     align-items: center;
   }
 
-  .cta__btn {
-    width: 100%;
-    max-width: 300px;
+  .cta__actions > .btn {
+    max-width: 340px;
   }
 }
 </style>

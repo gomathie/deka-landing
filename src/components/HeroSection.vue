@@ -19,7 +19,7 @@
           re-keying data and starts running the business.
         </p>
 
-        <div class="hero__actions animate-in animate-in-delay-3">
+        <div class="hero__actions btn-row animate-in animate-in-delay-3">
           <a href="https://cloud.dekaerp.com" class="btn btn--primary btn--large" id="hero-cta-primary">
             Get Started
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -134,7 +134,6 @@
 }
 
 .hero__actions {
-  display: flex;
   gap: var(--space-4);
   margin-bottom: var(--space-10);
 }
@@ -312,6 +311,11 @@
 
   .hero__actions {
     justify-content: center;
+    align-items: center;
+  }
+
+  .hero__actions > .btn {
+    max-width: 340px;
   }
 
   .hero__meta {

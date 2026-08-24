@@ -40,7 +40,7 @@ const customCategories = [
             description: 'DEKA ERP features keyboard-driven navigation to let you jump between modules, create records, and search contacts without touching your mouse.',
             instructions: [
               'Press <kbd>Ctrl + K</kbd> (Windows/Linux) or <kbd>Cmd + K</kbd> (macOS) from anywhere in the interface.',
-              'Type the name of any record, customer, invoice number, or module (e.g., "Create Sales Order", "Acme LLC", "Stock Receipt").',
+              'Type the name of any record, customer, invoice number, or module (e.g., "Create Sales Order", "Apex BNN", "Stock Receipt").',
               'Use the arrow keys to select the item and press <kbd>Enter</kbd> to open it immediately.'
             ],
             note: 'The Command Palette respects your module permissions. You will only see results for modules and records your role allows you to access.'
@@ -81,9 +81,9 @@ const customCategories = [
               table: {
                 columns: ['Company Name', 'Base Currency', 'Status', 'Users'],
                 rows: [
-                  ['Acme Trading LLC', 'USD ($)', 'Active', '12 Members'],
-                  ['Beta Manufacturing Ltd', 'EUR (€)', 'Active', '8 Members'],
-                  ['Cedar Logistics FZCO', 'AED (د.إ)', 'Active', '5 Members']
+                  ['Apex BNN Company', 'GHS (₵)', 'Active', '12 Members'],
+                  ['Sankofa Manufacturing Ltd', 'GHS (₵)', 'Active', '8 Members'],
+                  ['Volta Logistics Ltd', 'USD ($)', 'Active', '5 Members']
                 ]
               }
             }

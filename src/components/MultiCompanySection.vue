@@ -58,22 +58,22 @@
             <div class="multicompany__company multicompany__company--active">
               <div class="multicompany__company-avatar" style="background: var(--color-amber);">A</div>
               <div class="multicompany__company-info">
-                <span class="multicompany__company-name">Acme Trading LLC</span>
+                <span class="multicompany__company-name">Apex BNN Company</span>
                 <span class="multicompany__company-role">Admin</span>
               </div>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-amber)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             </div>
             <div class="multicompany__company">
-              <div class="multicompany__company-avatar" style="background: #3498DB;">B</div>
+              <div class="multicompany__company-avatar" style="background: #3498DB;">S</div>
               <div class="multicompany__company-info">
-                <span class="multicompany__company-name">Beta Manufacturing</span>
+                <span class="multicompany__company-name">Sankofa Manufacturing</span>
                 <span class="multicompany__company-role">Manager</span>
               </div>
             </div>
             <div class="multicompany__company">
-              <div class="multicompany__company-avatar" style="background: #2ECC71;">C</div>
+              <div class="multicompany__company-avatar" style="background: #2ECC71;">V</div>
               <div class="multicompany__company-info">
-                <span class="multicompany__company-name">Cedar Logistics</span>
+                <span class="multicompany__company-name">Volta Logistics</span>
                 <span class="multicompany__company-role">Viewer</span>
               </div>
             </div>

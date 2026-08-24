@@ -44,6 +44,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://dekaerp.com/blog/open-source-is-not-about-price</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://dekaerp.com/blog/stock-that-matches-reality</loc>
     <lastmod>2026-08-13</lastmod>
     <changefreq>monthly</changefreq>
@@ -58,6 +64,12 @@
   <url>
     <loc>https://dekaerp.com/blog/quotation-to-cash</loc>
     <lastmod>2026-07-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://dekaerp.com/blog/one-platform-fourteen-jobs</loc>
+    <lastmod>2026-07-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>

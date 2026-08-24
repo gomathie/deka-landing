@@ -19,22 +19,22 @@ export const categories = {
 export const posts = [
   {
     slug: 'deka-erp-1-5',
-    title: 'DEKA ERP 1.5: every company, one login — and 200 fewer papercuts',
+    title: 'DEKA ERP 1.5: every company, one login — and 60 fewer papercuts',
     excerpt:
-      'Multi-company is now part of the platform rather than a wish. Add a command palette, barcode scanning, a Maintenance module, PostgreSQL support and two security patches, and 1.5 is the largest release so far.',
+      'Multi-company is now part of the platform rather than a wish. Add a command palette, native barcode scanning, a Maintenance module, custom fields across nine modules, PostgreSQL support and two security patches, and 1.5 is the largest release so far.',
     category: 'platform',
     date: '2026-08-24',
-    readTime: '8 min read',
+    readTime: '10 min read',
     author: 'DEKA ERP Team',
     featured: true,
     body: [
       {
         type: 'p',
-        text: 'Version 1.5 is out, and it is the biggest release the platform has had. The headline is multi-company support that reaches all the way down into the data model, but the release also brings a keyboard-driven command palette, barcode scanning in the warehouse, a new Maintenance module, PostgreSQL as a first-class database, and more than two hundred individual fixes.',
+        text: 'Version 1.5 is out, and it is the biggest release the platform has had. The headline is multi-company support that reaches all the way down into the data model, but there is a lot behind it: a keyboard-driven command palette, native barcode scanning, a new Maintenance module, custom fields you can add yourself, PostgreSQL as a first-class database, and two security fixes.',
       },
       {
         type: 'p',
-        text: 'Here is what changed and, more usefully, what it changes about your day.',
+        text: 'Almost none of it requires a developer. Here is what changed and, more usefully, what it changes about your day.',
       },
 
       { type: 'h2', text: 'Multi-company, all the way down' },
@@ -46,10 +46,14 @@ export const posts = [
         type: 'list',
         items: [
           '<strong>Company scoping</strong> — records belong to an entity rather than being tagged with one.',
-          '<strong>Allowed-companies access control</strong> — a user sees the entities they are granted and nothing else.',
-          '<strong>Cross-company transfer guards</strong> — stock cannot drift between entities by accident.',
-          '<strong>Company switcher</strong> — move between entities from the top bar without signing out.',
+          '<strong>Allowed-companies access control</strong> — a user sees the entities they are granted and nothing else. Your accountant might get all of them; a branch salesperson gets one.',
+          '<strong>Cross-company transfer guards</strong> — stock belonging to one entity cannot drift into another by accident.',
+          '<strong>Company switcher</strong> — change entity from the dashboard in one click. No reload, no second login.',
         ],
+      },
+      {
+        type: 'p',
+        text: 'Before this, running two businesses meant two installations: two sets of credentials, the same customer typed in twice, and no way to see the group at once. That is now one installation and one login.',
       },
       {
         type: 'callout',
@@ -61,7 +65,7 @@ export const posts = [
       { type: 'h2', text: 'A command palette for people who hate clicking' },
       {
         type: 'p',
-        text: 'Press <code>Ctrl</code> + <code>K</code> — or <code>Cmd</code> + <code>K</code> on a Mac — anywhere in the interface and search across records and navigation without touching the mouse. It is a small feature that quietly rewires how power users work: the people entering forty orders a day stop navigating menus entirely.',
+        text: 'Press <code>Ctrl</code> + <code>K</code> — or <code>Cmd</code> + <code>K</code> on a Mac — anywhere in the interface. Search a customer, open any page, or fire an action without touching the mouse. It is a small feature that quietly rewires how power users work: the people entering forty orders a day stop navigating menus entirely.',
       },
       {
         type: 'quote',
@@ -71,33 +75,53 @@ export const posts = [
       { type: 'h2', text: 'The warehouse gets faster' },
       {
         type: 'p',
-        text: 'Two additions land together here, and they compound.',
+        text: 'Inventory got the deepest set of changes in the release, and they compound rather than sitting side by side.',
       },
       {
         type: 'table',
-        columns: ['Feature', 'What it does', 'Where it pays off'],
+        columns: ['Addition', 'What it does', 'Where it pays off'],
         rows: [
           [
-            '<strong>Barcode scanning</strong>',
-            'Native scanning support in inventory operations',
-            'Receipts and deliveries — the two highest-volume, highest-error moments',
+            '<strong>Native barcode scanning</strong>',
+            'Scan products directly in the app instead of typing codes',
+            'Receipts and deliveries — the highest-volume, highest-error moments',
           ],
           [
             '<strong>Putaway rules</strong>',
-            'Decides where incoming stock should be stored',
-            'Multi-location warehouses, where “where does this go?” is asked hundreds of times a week',
+            'Set the rule once; incoming stock routes to its own location',
+            'Multi-location warehouses, where “where does this go?” is asked all day',
+          ],
+          [
+            '<strong>Next-transfer shortcuts</strong>',
+            'Jump straight to the following step in a receive → store → deliver chain',
+            'Anywhere warehouse work runs as a sequence',
+          ],
+          [
+            '<strong>Bulk lot and serial creation</strong>',
+            'Generate tracking numbers in batches',
+            'Tracked goods arriving by the pallet',
+          ],
+          [
+            '<strong>Dashboard widgets</strong>',
+            'Stock health on the dashboard rather than buried in a report',
+            'The morning check that used to mean running three reports',
+          ],
+          [
+            '<strong>Reporting view and UOM categories</strong>',
+            'A deeper view of stock, and cleaner unit-of-measure handling',
+            'Anyone selling in one unit and buying in another',
           ],
         ],
       },
       {
         type: 'p',
-        text: 'Together they turn receiving from a data-entry task into a confirmation task. Scan, accept the suggested location, move on.',
+        text: 'Together these turn receiving from a data-entry task into a confirmation task. Scan, accept the suggested location, move on.',
       },
 
       { type: 'h2', text: 'A Maintenance module' },
       {
         type: 'p',
-        text: 'Equipment now has a home. Register machines and assets, raise maintenance requests against them, route those requests through teams and stages, and see the whole thing on a calendar. For anyone running production lines or a vehicle fleet, this closes a gap that previously lived in a notebook.',
+        text: 'Equipment now has a home. Register machines, vehicles and assets, raise maintenance requests against them, route those requests through teams and stages, and see the schedule on a calendar. Repairs get logged with a full history, in the same system as your stock and your sales.',
       },
       {
         type: 'callout',
@@ -106,23 +130,67 @@ export const posts = [
         text: 'The <a href="/guide/maintenance-operations-maintenance-requests">maintenance requests guide</a> covers requests, equipment, teams and stages end to end.',
       },
 
-      { type: 'h2', text: 'PostgreSQL, and a production Docker setup' },
+      { type: 'h2', text: 'Chatter stops being somewhere you have to check' },
       {
         type: 'p',
-        text: 'PostgreSQL is now supported alongside MySQL. If your team already runs Postgres, self-hosting no longer means adopting a second database engine to keep happy.',
+        text: 'Chatter — the comment and activity feed attached to every record — now pushes rather than waits. Mention someone, assign them something, or update a record they follow, and they get an alert both in the app and by email.',
       },
       {
         type: 'p',
-        text: 'There is also a Docker setup aimed at production rather than just local development — a meaningful reduction in the amount of bespoke server work a self-hosted deployment requires.',
+        text: 'It sounds minor until you notice how much of a working day is spent refreshing a page to see whether anything happened.',
       },
 
-      { type: 'h2', text: 'More languages' },
+      { type: 'h2', text: 'Custom fields, without a developer' },
+      {
+        type: 'p',
+        text: 'Every business tracks something the software did not anticipate — a licence number, an internal reference, a note that matters only to you. You can now add your own fields across Accounting, Products, Projects, Recruitment, Sales, Security, Time Off, Timesheets and Website.',
+      },
+      {
+        type: 'callout',
+        kind: 'note',
+        label: 'The quiet significance',
+        text: 'This is the feature that decides whether a system bends to your process or your process bends to the system. Nine modules is most of the surface area.',
+      },
+
+      { type: 'h2', text: 'Customer portal accounts, without a support ticket' },
+      {
+        type: 'p',
+        text: 'Portal access is now managed from the admin panel. Grant a customer access, revoke it, reset a password or send them a reset link — all from the interface, none of it requiring someone technical.',
+      },
+
+      { type: 'h2', text: 'Fewer surprises' },
+      {
+        type: 'p',
+        text: 'A cluster of consistency work landed that will not make a screenshot but removes a steady drip of small confusions.',
+      },
       {
         type: 'list',
         items: [
-          'Spanish consolidated into a single <code>es</code> locale.',
-          'Brazilian Portuguese (<code>pt-BR</code>) added.',
-          'Arabic localisation extended across the plugins.',
+          '<strong>Settings pages share one layout.</strong> Learn where things are once and the knowledge transfers.',
+          '<strong>The product screen is the same everywhere</strong> — Sales, Purchase or Inventory, it behaves identically.',
+          '<strong>Orders now hold their own sub-records.</strong> Deliveries, invoices, receipts and bills sit under the order they belong to, instead of being hunted down in other menus.',
+        ],
+      },
+
+      { type: 'h2', text: 'PostgreSQL, and a production Docker setup' },
+      {
+        type: 'p',
+        text: 'PostgreSQL is now supported alongside MySQL. If your team already runs Postgres for everything else, self-hosting no longer means adopting a second database engine to keep happy.',
+      },
+      {
+        type: 'p',
+        text: 'The Docker setup also got simpler and is now aimed at production rather than just local development — a meaningful cut in the bespoke server work a self-hosted deployment demands.',
+      },
+
+      { type: 'h2', text: 'Languages, branding and date ranges' },
+      {
+        type: 'list',
+        items: [
+          'Spanish tidied into a single consolidated locale.',
+          'Brazilian Portuguese added.',
+          'Arabic extended to the plugins screen.',
+          'Per-panel branding, so each panel can carry your own look.',
+          'A date-range filter on dashboards, for looking at exactly the period you care about.',
         ],
       },
 
@@ -134,34 +202,39 @@ export const posts = [
       {
         type: 'steps',
         items: [
-          'An <strong>insecure direct object reference</strong> in chatter allowed messages to be viewed or edited without authorisation. Fixed.',
-          'A <strong>publicly reachable database admin tool</strong> (<code>adminer.php</code>) shipped in the codebase. Removed.',
+          'A <strong>publicly reachable database admin tool</strong> (<code>adminer.php</code>) sat in a public folder, where anyone who guessed the address could in principle have reached it. Removed entirely.',
+          'An <strong>insecure direct object reference</strong> in chatter let some users view or edit messages that were not theirs. Closed.',
         ],
       },
       {
         type: 'callout',
         kind: 'important',
         label: 'If you self-host',
-        text: 'Upgrade promptly. Managed cloud instances on cloud.dekaerp.com are already patched — there is nothing for you to do.',
+        text: 'Upgrade promptly — on an older version, these two fixes alone justify it. Managed cloud instances on cloud.dekaerp.com are already patched; there is nothing for you to do.',
       },
 
       { type: 'h2', text: 'Under the hood' },
       {
         type: 'list',
         items: [
-          'Filament upgraded to <strong>5.7.3</strong>.',
-          'General performance work across the application.',
-          'Caches now refresh automatically when a plugin is installed or uninstalled — no more stale menus after a change.',
-          'Playwright browser tests added for the Website plugin.',
-          '<strong>200+</strong> individual issues resolved across inventory, chatter, PDF rendering and plugin integrations.',
+          'The core framework was upgraded.',
+          'Uninstalling a plugin is now blocked when another plugin still depends on it — a small guardrail against quietly breaking something.',
+          'Caches refresh automatically on plugin install and uninstall, so menus no longer go stale after a change.',
+          'Test coverage grew across Accounting and Inventory.',
+          'General performance work throughout.',
+          '<strong>60+</strong> individual issues resolved.',
         ],
       },
       {
         type: 'p',
-        text: 'That last line is the one that will not make a screenshot but will make your week. The long tail of small fixes is where a release stops feeling like a demo and starts feeling like software.',
+        text: 'That last line is the one that will not make a headline but will make your week. The long tail of small fixes is where a release stops feeling like a demo and starts feeling like software.',
       },
 
-      { type: 'h2', text: 'Upgrading' },
+      { type: 'h2', text: 'Should you upgrade?' },
+      {
+        type: 'p',
+        text: 'If you run more than one company, want PostgreSQL, or spend your day in the warehouse, 1.5 is an easy yes. If none of those apply, the two security fixes still make it worth doing sooner rather than at a convenient moment.',
+      },
       {
         type: 'steps',
         items: [
@@ -279,6 +352,172 @@ export const posts = [
       },
     ],
     related: ['quotation-to-cash', 'stock-that-matches-reality'],
+  },
+
+  {
+    slug: 'one-platform-fourteen-jobs',
+    title: 'One platform, fourteen jobs: a tour of DEKA ERP',
+    excerpt:
+      '“ERP” is a category name, not a description. Here is the plain-English version of what the system actually covers — sell, buy, make and move, run — and which parts you can safely ignore until you need them.',
+    category: 'operations',
+    date: '2026-07-21',
+    readTime: '8 min read',
+    author: 'DEKA ERP Team',
+    body: [
+      {
+        type: 'p',
+        text: '“Enterprise resource planning” is one of those phrases that manages to be both accurate and useless. It tells you the software is large. It does not tell you what happens when you sit down in front of it on a Tuesday.',
+      },
+      {
+        type: 'p',
+        text: 'So here is the concrete version. DEKA ERP is organised into fourteen modules across four groups, and you install only the ones you need. This is what each group actually does.',
+      },
+      {
+        type: 'table',
+        columns: ['Group', 'Modules', 'The question it answers'],
+        rows: [
+          ['<strong>Sell</strong>', 'Sales, Invoicing, Contacts, Customer Portal', 'What did we promise, and have we been paid?'],
+          ['<strong>Buy</strong>', 'Purchasing, Accounting, Payments', 'What did we order, and what do we owe?'],
+          ['<strong>Make &amp; Move</strong>', 'Inventory, Manufacturing, Products', 'What do we have, and where is it?'],
+          ['<strong>Run</strong>', 'Projects, Employees, Time Off &amp; Recruitment, Maintenance', 'Who is doing what, and with which equipment?'],
+        ],
+      },
+
+      { type: 'h2', text: 'Sell' },
+      {
+        type: 'p',
+        text: 'The revenue side, and usually the first thing a business moves off spreadsheets. A <a href="/guide/sales-orders-quotations">quotation</a> becomes a sales order on acceptance, the order drives a delivery, and the <a href="/guide/invoice-customers-invoices">invoice</a> bills what was actually delivered rather than what was originally ordered.',
+      },
+      {
+        type: 'list',
+        items: [
+          '<strong>Sales</strong> — quotations, orders, order templates, optional upsell lines.',
+          '<strong>Invoicing</strong> — invoices, credit notes, refunds, payment terms.',
+          '<strong>Contacts</strong> — <a href="/guide/contact-contacts">customers and vendors</a> in one address book, with bank details and tax registration.',
+          '<strong>Customer Portal</strong> — customers view their own orders and documents instead of emailing you for copies.',
+        ],
+      },
+      {
+        type: 'callout',
+        kind: 'tip',
+        label: 'Start here',
+        text: 'If you only move one process into the system, move this one. It is where re-keying costs the most, and the flow is covered end to end in <a href="/blog/quotation-to-cash">quotation to cash</a>.',
+      },
+
+      { type: 'h2', text: 'Buy' },
+      {
+        type: 'p',
+        text: 'The mirror image of Sell, and structurally almost identical: a request for quotation goes out, becomes a <a href="/guide/purchase-orders-purchase-orders">purchase order</a>, the goods arrive against it, and the vendor bill is checked against what actually turned up.',
+      },
+      {
+        type: 'list',
+        items: [
+          '<strong>Purchasing</strong> — RFQs, purchase orders, long-term agreements, vendor pricelists.',
+          '<strong>Accounting</strong> — chart of accounts, journals, taxes, reporting.',
+          '<strong>Payments</strong> — methods, registration, and reconciliation against invoices and bills.',
+        ],
+      },
+      {
+        type: 'p',
+        text: 'The accounting module is the one people expect to be painful and usually is not, because the entries are a by-product of the documents rather than a separate exercise. More on that in <a href="/blog/closing-the-month">closing the month</a>.',
+      },
+
+      { type: 'h2', text: 'Make & Move' },
+      {
+        type: 'p',
+        text: 'Everything physical. <a href="/guide/inventories-operations-transfers">Transfers</a> record stock moving between locations, warehouses, vendors and customers; adjustments handle the reality of damage, returns and miscounts. If you assemble anything, <a href="/guide/manufacturing-operations-manufacturing-orders">manufacturing orders</a> consume components against a bill of materials and produce finished goods.',
+      },
+      {
+        type: 'list',
+        items: [
+          '<strong>Inventory</strong> — warehouses, receipts, deliveries, lots and serial numbers, barcode scanning.',
+          '<strong>Manufacturing</strong> — bills of materials, work orders, work centres, component availability.',
+          '<strong>Products</strong> — variants, categories, attributes, units of measure, pricelists.',
+        ],
+      },
+      {
+        type: 'callout',
+        kind: 'note',
+        label: 'Skip what you do not do',
+        text: 'A business that does not manufacture never installs Manufacturing and never sees the menu. That is the point of modules — the system should not be a tour of features you will never use.',
+      },
+
+      { type: 'h2', text: 'Run the business' },
+      {
+        type: 'p',
+        text: 'The internal half: people, work, and the equipment that does it.',
+      },
+      {
+        type: 'list',
+        items: [
+          '<strong>Projects</strong> — <a href="/guide/project-projects">projects and tasks</a> with stages, milestones and time tracking.',
+          '<strong>Employees</strong> — <a href="/guide/employees-employees">records</a>, departments, contracts and documents.',
+          '<strong>Time Off &amp; Recruitment</strong> — <a href="/guide/time-off-my-time">leave requests</a> and approvals, job postings, <a href="/guide/recruitment-applications">applicant pipelines</a>.',
+          '<strong>Maintenance</strong> — <a href="/guide/maintenance-operations-maintenance-requests">equipment, requests, teams</a> and a maintenance calendar.',
+        ],
+      },
+      {
+        type: 'p',
+        text: 'Recruitment and Time Off are worth calling out because they are the two most commonly run in a separate tool, and the two where a separate tool causes the most confusion — a person hired in one system and given leave in another is a person nobody can report on.',
+      },
+
+      { type: 'h2', text: 'The part that is easy to miss' },
+      {
+        type: 'p',
+        text: 'Read that list again and it looks like fourteen applications sold together. It is not, and the difference is the whole reason to run an ERP rather than four good point tools.',
+      },
+      {
+        type: 'steps',
+        items: [
+          'Confirming a sales order <strong>reserves stock</strong> in Inventory.',
+          'Validating the delivery <strong>moves that stock</strong> and records what actually shipped.',
+          'Invoicing the order <strong>posts to the ledger</strong> in Accounting.',
+          'Registering the payment <strong>updates the customer balance</strong> everywhere at once.',
+        ],
+      },
+      {
+        type: 'quote',
+        text: 'Four departments, one record. Nobody re-types anything, because there is nothing to re-type.',
+      },
+      {
+        type: 'p',
+        text: 'Every record also carries its own discussion thread and file attachments, so the conversation about an invoice lives on the invoice rather than in somebody’s inbox.',
+      },
+
+      { type: 'h2', text: 'What sits underneath all of it' },
+      {
+        type: 'list',
+        items: [
+          '<strong>Multi-company</strong> — several legal entities in one installation, with separate books and a switcher.',
+          '<strong>Roles and permissions</strong> — access granted per module and per company.',
+          '<strong>Five interface languages</strong>, including right-to-left support.',
+          '<strong>REST API and spreadsheet import/export</strong> on every list view.',
+          '<strong>Cloud or self-hosted</strong>, running the same application either way.',
+        ],
+      },
+
+      { type: 'h2', text: 'Where to start' },
+      {
+        type: 'p',
+        text: 'Not everywhere. The failed ERP projects are almost always the ones that tried to switch the whole business over one weekend.',
+      },
+      {
+        type: 'steps',
+        items: [
+          'Pick the process that causes the most duplicate typing today — usually orders and invoices.',
+          'Migrate the master data behind it: customers, vendors, products.',
+          'Run that one flow end to end until nobody is using a workaround.',
+          'Add the next module only then.',
+        ],
+      },
+      {
+        type: 'callout',
+        kind: 'tip',
+        label: 'Have a look first',
+        text: 'Every module above has a step-by-step walkthrough with the real screens in the <a href="/guide">user guide</a> — worth ten minutes before you decide what to switch on.',
+      },
+    ],
+    related: ['quotation-to-cash', 'outgrowing-spreadsheets', 'multi-company-without-multi-systems'],
   },
 
   {
@@ -451,7 +690,7 @@ export const posts = [
         text: 'Multi-company is part of the platform, not an add-on. Entities are created from Settings, users are granted access per company, and the switcher in the top bar moves between them in one click — one installation, one login.',
       },
     ],
-    related: ['deka-erp-1-5', 'cloud-or-self-hosted', 'closing-the-month'],
+    related: ['deka-erp-1-5', 'open-source-is-not-about-price', 'cloud-or-self-hosted'],
   },
 
   {
@@ -550,6 +789,152 @@ export const posts = [
       },
     ],
     related: ['quotation-to-cash', 'outgrowing-spreadsheets'],
+  },
+
+  {
+    slug: 'open-source-is-not-about-price',
+    title: 'Open source is not about the price tag',
+    excerpt:
+      'The cheapest thing about open-source software is usually the licence. What you are really buying is the right to leave — and that turns out to matter far more than the sticker.',
+    category: 'platform',
+    date: '2026-08-18',
+    readTime: '7 min read',
+    author: 'DEKA ERP Team',
+    body: [
+      {
+        type: 'p',
+        text: 'When open source comes up in a software decision, the conversation almost always starts in the wrong place: with cost. Free licence, smaller invoice, done. It is an easy argument to make and a weak one to rely on, because by the time you have paid for hosting, migration and somebody’s time, the licence line was never where the money went.',
+      },
+      {
+        type: 'p',
+        text: 'The real argument is less obvious and much more durable. Open source is a hedge against the day the relationship stops working.',
+      },
+
+      { type: 'h2', text: 'What you are actually buying' },
+      {
+        type: 'p',
+        text: 'An ERP ends up holding your customers, your prices, your stock history and your ledger. Three or four years in, it is not a tool you use — it is the record of how the business ran. That concentration is exactly what makes the switching cost so brutal, and exactly what a vendor’s pricing power rests on.',
+      },
+      {
+        type: 'p',
+        text: 'Open source does not make that data less concentrated. It makes it less <em>captive</em>. The schema is documented because you can read it. The export exists because you can write one. Nobody has to approve your departure.',
+      },
+      {
+        type: 'quote',
+        text: 'The value of an exit is not that you take it. It is that both sides know it exists.',
+      },
+
+      { type: 'h2', text: 'The lock-in test' },
+      {
+        type: 'p',
+        text: 'Whatever a vendor calls their licence, three questions tell you where you stand:',
+      },
+      {
+        type: 'steps',
+        items: [
+          '<strong>If you stopped paying tomorrow, what happens to the data?</strong> Not “can you request an export” — can you take it, in a format something else can read, without asking?',
+          '<strong>Can anyone but the vendor host it?</strong> If the answer is no, the price is whatever they decide it is next year.',
+          '<strong>Can you read the code that calculates your tax?</strong> If not, you are trusting a number you cannot check.',
+        ],
+      },
+      {
+        type: 'callout',
+        kind: 'important',
+        label: 'Test it once, for real',
+        text: 'Run the export. Open the file. Confirm it contains what you think it contains. An escape route you have never walked is a rumour, not a plan.',
+      },
+
+      { type: 'h2', text: 'Where the two models actually differ' },
+      {
+        type: 'table',
+        columns: ['', 'Closed source', 'Open source'],
+        rows: [
+          ['Leaving', 'Whatever the contract permits', 'Take the data and the code'],
+          ['Hosting', 'The vendor, at their price', 'Their cloud, your servers, or someone else’s'],
+          ['Auditing', 'Trust the vendor', 'Read it, or pay someone to'],
+          ['Extending', 'Wait for the roadmap', 'Build it, or wait for the roadmap'],
+          ['If the vendor folds', 'The software goes with them', 'The code outlives the company'],
+          ['Cost shape', 'Licence plus support', 'Hosting plus time'],
+        ],
+      },
+      {
+        type: 'p',
+        text: 'That last row is the honest one, and it cuts both ways. Open source moves cost rather than removing it.',
+      },
+
+      { type: 'h2', text: 'Auditability is a security feature' },
+      {
+        type: 'p',
+        text: 'There is a persistent myth that code nobody can read is safer, because attackers cannot read it either. In practice the opposite tends to hold: attackers find bugs regardless, and the only question is whether anyone else was allowed to look first.',
+      },
+      {
+        type: 'p',
+        text: 'The recent <a href="/blog/deka-erp-1-5">1.5 release</a> is a small illustration. Two security issues were found, fixed, and described publicly — including the awkward one, a database admin tool that should never have shipped. That is what the process looks like when it works. A closed platform would have shipped the same fix in a release note that said “various improvements”.',
+      },
+      {
+        type: 'callout',
+        kind: 'note',
+        label: 'What to look for',
+        text: 'Not “has this project ever had a vulnerability” — every project has. Look at how quickly they were fixed, and whether the project said so plainly.',
+      },
+
+      { type: 'h2', text: 'Where open source is not free' },
+      {
+        type: 'p',
+        text: 'It is worth being blunt about the costs that replace the licence fee, because pretending they do not exist is how open-source projects end up abandoned six months in.',
+      },
+      {
+        type: 'list',
+        items: [
+          '<strong>Someone has to run it.</strong> Servers, backups, TLS certificates, upgrades. That is a job, even if it is a small one.',
+          '<strong>Support is a choice, not a default.</strong> Community help is real but unscheduled. If you need someone to answer at month-end, arrange it.',
+          '<strong>Freedom to modify is freedom to diverge.</strong> Every customisation is something you now maintain through every upgrade.',
+        ],
+      },
+      {
+        type: 'p',
+        text: 'None of these are arguments against open source. They are arguments for choosing it deliberately — and for taking the managed option when nobody on the team wants to own a server.',
+      },
+
+      { type: 'h2', text: 'Applying the test to DEKA ERP' },
+      {
+        type: 'p',
+        text: 'It would be cheap to make this argument and then dodge our own three questions, so here are the answers plainly.',
+      },
+      {
+        type: 'p',
+        text: 'DEKA ERP is built on an open-source core: an MIT-licensed Laravel and Filament application. We maintain and operate our own build of it rather than publishing that build, so the honest claim is not “take our source” — it is that the foundation underneath is public, standard, and not any single vendor’s private property.',
+      },
+      {
+        type: 'p',
+        text: 'What that means for the questions above:',
+      },
+      {
+        type: 'list',
+        items: [
+          '<strong>Your data.</strong> It lives in an ordinary PostgreSQL or MySQL database — no proprietary datastore. Take a dump, query it directly, export any list view to a spreadsheet, or pull it through the REST API with a token.',
+          '<strong>Hosting.</strong> Run it on <a href="/blog/cloud-or-self-hosted">our cloud or your own servers</a>. Self-hosting is a supported option, not a bargaining chip, and it is the same application either way.',
+          '<strong>The platform beneath.</strong> Standard PHP on a public, MIT-licensed project — auditable by anyone, and not dependent on our company continuing to exist.',
+        ],
+      },
+      {
+        type: 'callout',
+        kind: 'note',
+        label: 'Where the line sits',
+        text: 'Open core, operated build. You get portability of your data and choice of where it runs; you do not get a copy of our repository. Worth knowing which one you are being sold, whoever you buy from.',
+      },
+      {
+        type: 'p',
+        text: 'The practical version of all this is unglamorous: you can start on the managed cloud because it is faster, and move in-house later because nothing stops you. The decision stays yours after you have made it, which is the only property of a software choice that reliably ages well.',
+      },
+      {
+        type: 'callout',
+        kind: 'tip',
+        label: 'If you want to kick the tyres',
+        text: 'Start a workspace on cloud.dekaerp.com, load a month of real data, and try the export before you commit to anything.',
+      },
+    ],
+    related: ['cloud-or-self-hosted', 'deka-erp-1-5', 'outgrowing-spreadsheets'],
   },
 
   {

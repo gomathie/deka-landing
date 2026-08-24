@@ -1099,12 +1099,26 @@ const getCellClass = (cellValue) => {
   border-radius: var(--radius-xl);
   transition: all var(--duration-fast) var(--ease-out);
   max-width: 320px;
+  cursor: pointer;
+  user-select: none;
+  text-align: left;
+}
+
+@media (prefers-color-scheme: dark) {
+  .guide-nav-btn {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
 }
 
 .guide-nav-btn:hover {
   border-color: var(--color-amber);
   box-shadow: var(--shadow-sm);
   transform: translateY(-1px);
+}
+
+.guide-nav-btn:active {
+  transform: translateY(0) scale(0.98);
 }
 
 .guide-nav-btn--next {
@@ -1258,19 +1272,33 @@ const getCellClass = (cellValue) => {
 @media (max-width: 860px) {
   .guide-header {
     padding: 0 var(--space-4);
+    gap: var(--space-4);
   }
 
   .guide-header__search {
-    max-width: 220px;
+    flex: 1;
+    max-width: unset;
+  }
+
+  .guide-header__search input {
+    padding-right: var(--space-4);
   }
 
   .guide-header__signin,
-  .guide-header__btn {
+  .guide-header__btn,
+  .guide-header__cta,
+  .guide-header__kbd {
     display: none;
   }
 
   .guide-mobile-menu-btn {
     display: block;
+  }
+}
+
+@media (max-width: 500px) {
+  .guide-header__badge {
+    display: none;
   }
 
   .guide-body {

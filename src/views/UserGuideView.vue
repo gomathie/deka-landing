@@ -70,7 +70,7 @@
       <aside class="guide-sidebar" :class="{ 'guide-sidebar--open': isMobileMenuOpen }">
         <div class="guide-sidebar__header">
           <span class="guide-sidebar__title">DEKA ERP Documentation</span>
-          <span class="guide-sidebar__subtitle">Step-by-step feature guides</span>
+          <span class="guide-sidebar__subtitle">{{ totalGuides }} guides across {{ guideCategories.length }} modules</span>
         </div>
 
         <nav class="guide-sidebar__nav">
@@ -352,6 +352,8 @@ const allGuides = computed(() => {
   return list
 })
 
+const totalGuides = computed(() => allGuides.value.length)
+
 // Initialize active section from URL param or default to first guide
 const activeSectionId = ref(
   (route.params.section || (allGuides.value[0] && allGuides.value[0].id))
@@ -511,6 +513,11 @@ const handleKeydown = (e) => {
   }
 }
 
+// Stop the page behind the drawer from scrolling on touch devices.
+watch(isMobileMenuOpen, (open) => {
+  document.body.style.overflow = open ? 'hidden' : ''
+})
+
 // Expand whichever module holds the page being viewed.
 watch(
   currentCategory,
@@ -563,6 +570,7 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('keydown', handleKeydown)
   window.removeEventListener('scroll', syncActiveHeading)
+  document.body.style.overflow = ''
   document.title = 'DEKA ERP'
 })
 
@@ -1688,19 +1696,17 @@ const getCellClass = (cellValue) => {
   }
 }
 
+/* Below this width the sidebar turns into a drawer — the same breakpoint
+   that reveals the hamburger, so the button is never inert. */
 @media (max-width: 860px) {
   .guide-header {
     padding: 0 var(--space-4);
-    gap: var(--space-4);
+    gap: var(--space-3);
   }
 
   .guide-header__search {
     flex: 1;
     max-width: unset;
-  }
-
-  .guide-header__search input {
-    padding-right: var(--space-4);
   }
 
   .guide-header__signin,
@@ -1711,7 +1717,50 @@ const getCellClass = (cellValue) => {
   }
 
   .guide-mobile-menu-btn {
+    display: inline-flex;
+  }
+
+  .guide-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .guide-sidebar {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    width: min(320px, 85vw);
+    height: calc(100dvh - var(--header-height));
+    z-index: 90;
+    transform: translateX(-100%);
+    transition: transform var(--duration-normal) var(--ease-out);
+    box-shadow: var(--shadow-xl);
+    overscroll-behavior: contain;
+  }
+
+  .guide-sidebar--open {
+    transform: translateX(0);
+  }
+
+  .guide-sidebar-backdrop {
     display: block;
+    position: fixed;
+    inset: 0;
+    top: var(--header-height);
+    background: rgba(21, 27, 33, 0.5);
+    backdrop-filter: blur(2px);
+    z-index: 80;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--duration-normal) var(--ease-out), visibility var(--duration-normal);
+  }
+
+  .guide-sidebar-backdrop--visible {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .guide-content {
+    padding: var(--space-6) var(--space-6) var(--space-16);
   }
 }
 
@@ -1720,43 +1769,8 @@ const getCellClass = (cellValue) => {
     display: none;
   }
 
-  .guide-body {
-    grid-template-columns: 1fr;
-  }
-
-  .guide-sidebar {
-    position: fixed;
-    top: var(--header-height);
-    left: 0;
-    width: 280px;
-    height: calc(100vh - var(--header-height));
-    z-index: 90;
-    transform: translateX(-100%);
-    transition: transform var(--duration-normal) var(--ease-out);
-    box-shadow: var(--shadow-xl);
-  }
-
-  .guide-sidebar--open {
-    transform: translateX(0);
-  }
-
-  .guide-sidebar-backdrop {
-    display: none;
-    position: fixed;
-    inset: 0;
-    top: var(--header-height);
-    background: rgba(0, 0, 0, 0.4);
-    z-index: 80;
-  }
-
-  .guide-sidebar-backdrop--visible {
-    display: block;
-  }
-
-
-
   .guide-content {
-    padding: var(--space-6) var(--space-4) var(--space-16);
+    padding: var(--space-5) var(--space-4) var(--space-16);
   }
 
   .guide-doc-title {
@@ -1765,6 +1779,28 @@ const getCellClass = (cellValue) => {
 
   .guide-ui-fields-grid {
     grid-template-columns: 1fr;
+  }
+
+  .guide-raw-html :deep(.doc-heading--h2) {
+    font-size: var(--text-xl);
+    margin-top: var(--space-10);
+  }
+
+  .guide-raw-html :deep(.doc-callout) {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .guide-raw-html :deep(ul),
+  .guide-raw-html :deep(ol) {
+    padding-left: var(--space-5);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .guide-sidebar,
+  .guide-sidebar-backdrop,
+  .guide-category__chevron {
+    transition-duration: 1ms;
   }
 }
 </style>

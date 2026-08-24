@@ -26,6 +26,17 @@ const routes = [
     ],
   },
   {
+    path: '/blog',
+    name: 'Blog',
+    component: () => import('../views/BlogView.vue'),
+    meta: { title: 'Blog — DEKA ERP' },
+  },
+  {
+    path: '/blog/:slug',
+    name: 'BlogPost',
+    component: () => import('../views/BlogPostView.vue'),
+  },
+  {
     path: '/privacy',
     name: 'PrivacyPolicy',
     component: PrivacyPolicyView,

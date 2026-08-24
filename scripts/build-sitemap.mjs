@@ -12,6 +12,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { guideCategories } from '../src/data/guideData.js'
+import { sortedPosts } from '../src/data/blogPosts.js'
 
 const PROJECT_ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 const OUTPUT = path.join(PROJECT_ROOT, 'public/sitemap.xml')

@@ -10,6 +10,7 @@
         <a :href="isHomePage ? '#benefits' : '/#benefits'" class="header__link" @click="closeMenu">Benefits</a>
         <a :href="isHomePage ? '#multi-company' : '/#multi-company'" class="header__link" @click="closeMenu">Multi-Company</a>
         <a :href="isHomePage ? '#deployment' : '/#deployment'" class="header__link" @click="closeMenu">Deployment</a>
+        <router-link to="/blog" class="header__link" @click="closeMenu">Blog</router-link>
         <router-link to="/guide" class="header__link header__link--guide" @click="closeMenu">
           <span>User Guide</span>
           <span class="header__guide-pill">Docs</span>
@@ -43,6 +44,7 @@
         <a :href="isHomePage ? '#benefits' : '/#benefits'" class="header__mobile-link" @click="closeMenu">Benefits</a>
         <a :href="isHomePage ? '#multi-company' : '/#multi-company'" class="header__mobile-link" @click="closeMenu">Multi-Company</a>
         <a :href="isHomePage ? '#deployment' : '/#deployment'" class="header__mobile-link" @click="closeMenu">Deployment</a>
+        <router-link to="/blog" class="header__mobile-link" @click="closeMenu">Blog</router-link>
         <router-link to="/guide" class="header__mobile-link header__mobile-link--guide" @click="closeMenu">
           📖 User Guide &amp; Feature Walkthroughs
         </router-link>

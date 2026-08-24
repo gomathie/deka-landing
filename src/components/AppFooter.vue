@@ -15,6 +15,7 @@
           <a href="/#benefits" class="footer__link">Benefits</a>
           <a href="/#multi-company" class="footer__link">Multi-Company</a>
           <a href="/#deployment" class="footer__link">Deployment</a>
+          <router-link to="/blog" class="footer__link">Blog</router-link>
         </div>
         <div class="footer__col">
           <h4 class="footer__col-title">Documentation</h4>

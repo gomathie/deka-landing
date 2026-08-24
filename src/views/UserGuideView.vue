@@ -511,14 +511,17 @@ const handleKeydown = (e) => {
   }
 }
 
-// Keep only the active module expanded when navigating to a new page, so a
-// 80-page sidebar stays scannable.
-watch(currentCategory, (cat) => {
-  if (!cat) return
-  const next = new Set(collapsedCategories.value)
-  next.delete(cat.id)
-  collapsedCategories.value = next
-})
+// Expand whichever module holds the page being viewed.
+watch(
+  currentCategory,
+  (cat) => {
+    if (!cat) return
+    const next = new Set(collapsedCategories.value)
+    next.delete(cat.id)
+    collapsedCategories.value = next
+  },
+  { immediate: true }
+)
 
 watch(
   currentGuide,

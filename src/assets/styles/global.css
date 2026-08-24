@@ -115,7 +115,7 @@ h1, h2, h3, h4, h5, h6 {
   font-size: var(--text-sm);
   font-weight: var(--weight-semibold);
   line-height: 1;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-full);
   transition: all var(--duration-normal) var(--ease-out);
   white-space: nowrap;
 }
@@ -154,7 +154,7 @@ h1, h2, h3, h4, h5, h6 {
 .btn--large {
   padding: var(--space-4) var(--space-8);
   font-size: var(--text-base);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-full);
 }
 
 .btn--ghost {

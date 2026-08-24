@@ -26,6 +26,12 @@ const routes = [
     ],
   },
   {
+    path: '/about',
+    name: 'About',
+    component: () => import('../views/AboutView.vue'),
+    meta: { title: 'About — DEKA ERP' },
+  },
+  {
     path: '/blog',
     name: 'Blog',
     component: () => import('../views/BlogView.vue'),

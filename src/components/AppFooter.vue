@@ -11,9 +11,10 @@
       <div class="footer__links">
         <div class="footer__col">
           <h4 class="footer__col-title">Product</h4>
-          <a href="/#features" class="footer__link">Features</a>
+          <router-link to="/about" class="footer__link">About</router-link>
+          <router-link to="/about#features" class="footer__link">Features</router-link>
+          <router-link to="/about#multi-company" class="footer__link">Multi-Company</router-link>
           <a href="/#benefits" class="footer__link">Benefits</a>
-          <a href="/#multi-company" class="footer__link">Multi-Company</a>
           <a href="/#deployment" class="footer__link">Deployment</a>
           <router-link to="/blog" class="footer__link">Blog</router-link>
         </div>

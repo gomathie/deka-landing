@@ -6,9 +6,8 @@
       </router-link>
 
       <nav class="header__nav" :class="{ 'header__nav--open': menuOpen }" id="main-nav" aria-label="Main navigation">
-        <a :href="isHomePage ? '#features' : '/#features'" class="header__link" @click="closeMenu">Features</a>
+        <router-link to="/about" class="header__link" @click="closeMenu">About</router-link>
         <a :href="isHomePage ? '#benefits' : '/#benefits'" class="header__link" @click="closeMenu">Benefits</a>
-        <a :href="isHomePage ? '#multi-company' : '/#multi-company'" class="header__link" @click="closeMenu">Multi-Company</a>
         <a :href="isHomePage ? '#deployment' : '/#deployment'" class="header__link" @click="closeMenu">Deployment</a>
         <router-link to="/blog" class="header__link" @click="closeMenu">Blog</router-link>
         <router-link to="/guide" class="header__link header__link--guide" @click="closeMenu">
@@ -40,9 +39,8 @@
     <!-- Mobile overlay -->
     <div class="header__overlay" :class="{ 'header__overlay--visible': menuOpen }" @click="closeMenu">
       <nav class="header__mobile-nav" @click.stop>
-        <a :href="isHomePage ? '#features' : '/#features'" class="header__mobile-link" @click="closeMenu">Features</a>
+        <router-link to="/about" class="header__mobile-link" @click="closeMenu">About</router-link>
         <a :href="isHomePage ? '#benefits' : '/#benefits'" class="header__mobile-link" @click="closeMenu">Benefits</a>
-        <a :href="isHomePage ? '#multi-company' : '/#multi-company'" class="header__mobile-link" @click="closeMenu">Multi-Company</a>
         <a :href="isHomePage ? '#deployment' : '/#deployment'" class="header__mobile-link" @click="closeMenu">Deployment</a>
         <router-link to="/blog" class="header__mobile-link" @click="closeMenu">Blog</router-link>
         <router-link to="/guide" class="header__mobile-link header__mobile-link--guide" @click="closeMenu">

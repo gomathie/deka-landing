@@ -18,6 +18,170 @@ export const categories = {
 
 export const posts = [
   {
+    slug: 'deka-erp-1-5',
+    title: 'DEKA ERP 1.5: every company, one login — and 200 fewer papercuts',
+    excerpt:
+      'Multi-company is now part of the platform rather than a wish. Add a command palette, barcode scanning, a Maintenance module, PostgreSQL support and two security patches, and 1.5 is the largest release so far.',
+    category: 'platform',
+    date: '2026-08-24',
+    readTime: '8 min read',
+    author: 'DEKA ERP Team',
+    featured: true,
+    body: [
+      {
+        type: 'p',
+        text: 'Version 1.5 is out, and it is the biggest release the platform has had. The headline is multi-company support that reaches all the way down into the data model, but the release also brings a keyboard-driven command palette, barcode scanning in the warehouse, a new Maintenance module, PostgreSQL as a first-class database, and more than two hundred individual fixes.',
+      },
+      {
+        type: 'p',
+        text: 'Here is what changed and, more usefully, what it changes about your day.',
+      },
+
+      { type: 'h2', text: 'Multi-company, all the way down' },
+      {
+        type: 'p',
+        text: 'Plenty of systems claim multi-company and deliver a filter on a list view. This release does the harder version. Records are scoped to a company, users are granted an explicit set of companies they may access, and transfers that would cross from one entity into another are guarded rather than quietly permitted.',
+      },
+      {
+        type: 'list',
+        items: [
+          '<strong>Company scoping</strong> — records belong to an entity rather than being tagged with one.',
+          '<strong>Allowed-companies access control</strong> — a user sees the entities they are granted and nothing else.',
+          '<strong>Cross-company transfer guards</strong> — stock cannot drift between entities by accident.',
+          '<strong>Company switcher</strong> — move between entities from the top bar without signing out.',
+        ],
+      },
+      {
+        type: 'callout',
+        kind: 'note',
+        label: 'Why it matters',
+        text: 'This is the difference between a group system and two systems sharing a login screen. One installation, one set of credentials, strictly separate books. Walk through the setup in the <a href="/guide/multi-company-guide">multi-company guide</a>.',
+      },
+
+      { type: 'h2', text: 'A command palette for people who hate clicking' },
+      {
+        type: 'p',
+        text: 'Press <code>Ctrl</code> + <code>K</code> — or <code>Cmd</code> + <code>K</code> on a Mac — anywhere in the interface and search across records and navigation without touching the mouse. It is a small feature that quietly rewires how power users work: the people entering forty orders a day stop navigating menus entirely.',
+      },
+      {
+        type: 'quote',
+        text: 'The fastest interface is the one you stop looking at.',
+      },
+
+      { type: 'h2', text: 'The warehouse gets faster' },
+      {
+        type: 'p',
+        text: 'Two additions land together here, and they compound.',
+      },
+      {
+        type: 'table',
+        columns: ['Feature', 'What it does', 'Where it pays off'],
+        rows: [
+          [
+            '<strong>Barcode scanning</strong>',
+            'Native scanning support in inventory operations',
+            'Receipts and deliveries — the two highest-volume, highest-error moments',
+          ],
+          [
+            '<strong>Putaway rules</strong>',
+            'Decides where incoming stock should be stored',
+            'Multi-location warehouses, where “where does this go?” is asked hundreds of times a week',
+          ],
+        ],
+      },
+      {
+        type: 'p',
+        text: 'Together they turn receiving from a data-entry task into a confirmation task. Scan, accept the suggested location, move on.',
+      },
+
+      { type: 'h2', text: 'A Maintenance module' },
+      {
+        type: 'p',
+        text: 'Equipment now has a home. Register machines and assets, raise maintenance requests against them, route those requests through teams and stages, and see the whole thing on a calendar. For anyone running production lines or a vehicle fleet, this closes a gap that previously lived in a notebook.',
+      },
+      {
+        type: 'callout',
+        kind: 'tip',
+        label: 'Getting started',
+        text: 'The <a href="/guide/maintenance-operations-maintenance-requests">maintenance requests guide</a> covers requests, equipment, teams and stages end to end.',
+      },
+
+      { type: 'h2', text: 'PostgreSQL, and a production Docker setup' },
+      {
+        type: 'p',
+        text: 'PostgreSQL is now supported alongside MySQL. If your team already runs Postgres, self-hosting no longer means adopting a second database engine to keep happy.',
+      },
+      {
+        type: 'p',
+        text: 'There is also a Docker setup aimed at production rather than just local development — a meaningful reduction in the amount of bespoke server work a self-hosted deployment requires.',
+      },
+
+      { type: 'h2', text: 'More languages' },
+      {
+        type: 'list',
+        items: [
+          'Spanish consolidated into a single <code>es</code> locale.',
+          'Brazilian Portuguese (<code>pt-BR</code>) added.',
+          'Arabic localisation extended across the plugins.',
+        ],
+      },
+
+      { type: 'h2', text: 'Two security fixes worth reading twice' },
+      {
+        type: 'p',
+        text: 'This release patches two issues, and both are reasons to upgrade rather than wait for a convenient weekend.',
+      },
+      {
+        type: 'steps',
+        items: [
+          'An <strong>insecure direct object reference</strong> in chatter allowed messages to be viewed or edited without authorisation. Fixed.',
+          'A <strong>publicly reachable database admin tool</strong> (<code>adminer.php</code>) shipped in the codebase. Removed.',
+        ],
+      },
+      {
+        type: 'callout',
+        kind: 'important',
+        label: 'If you self-host',
+        text: 'Upgrade promptly. Managed cloud instances on cloud.dekaerp.com are already patched — there is nothing for you to do.',
+      },
+
+      { type: 'h2', text: 'Under the hood' },
+      {
+        type: 'list',
+        items: [
+          'Filament upgraded to <strong>5.7.3</strong>.',
+          'General performance work across the application.',
+          'Caches now refresh automatically when a plugin is installed or uninstalled — no more stale menus after a change.',
+          'Playwright browser tests added for the Website plugin.',
+          '<strong>200+</strong> individual issues resolved across inventory, chatter, PDF rendering and plugin integrations.',
+        ],
+      },
+      {
+        type: 'p',
+        text: 'That last line is the one that will not make a screenshot but will make your week. The long tail of small fixes is where a release stops feeling like a demo and starts feeling like software.',
+      },
+
+      { type: 'h2', text: 'Upgrading' },
+      {
+        type: 'steps',
+        items: [
+          'On the managed cloud, you are already running 1.5 — no action needed.',
+          'Self-hosting: take a backup and <em>restore it somewhere</em> to confirm it works before you begin.',
+          'Pull the release, run the dependency install and the database migrations.',
+          'Clear and rebuild caches, then verify company access for a user in each entity.',
+        ],
+      },
+      {
+        type: 'callout',
+        kind: 'tip',
+        label: 'Multi-company first',
+        text: 'If you have been running one entity per installation to keep books separate, 1.5 is the release that lets you consolidate. Start with the entity you understand best and migrate the rest once the access model is set up the way you want it.',
+      },
+    ],
+    related: ['multi-company-without-multi-systems', 'stock-that-matches-reality', 'cloud-or-self-hosted'],
+  },
+
+  {
     slug: 'outgrowing-spreadsheets',
     title: 'Five signs your business has outgrown spreadsheets',
     excerpt:
@@ -26,7 +190,6 @@ export const posts = [
     date: '2026-07-14',
     readTime: '6 min read',
     author: 'DEKA ERP Team',
-    featured: true,
     body: [
       {
         type: 'p',
@@ -288,7 +451,7 @@ export const posts = [
         text: 'Multi-company is part of the platform, not an add-on. Entities are created from Settings, users are granted access per company, and the switcher in the top bar moves between them in one click — one installation, one login.',
       },
     ],
-    related: ['cloud-or-self-hosted', 'closing-the-month'],
+    related: ['deka-erp-1-5', 'cloud-or-self-hosted', 'closing-the-month'],
   },
 
   {
@@ -553,7 +716,7 @@ export const posts = [
         text: 'PHP 8.2+, PostgreSQL or MySQL, Redis, a reverse proxy with TLS, and a backup you have restored at least once. The API and self-hosting guide covers the full setup.',
       },
     ],
-    related: ['multi-company-without-multi-systems', 'outgrowing-spreadsheets'],
+    related: ['deka-erp-1-5', 'multi-company-without-multi-systems', 'outgrowing-spreadsheets'],
   },
 ]
 

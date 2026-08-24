@@ -21,9 +21,17 @@ const ORIGIN = 'https://dekaerp.com'
 const staticPages = [
   { path: '/', changefreq: 'weekly', priority: '1.0' },
   { path: '/guide', changefreq: 'weekly', priority: '0.9' },
+  { path: '/blog', changefreq: 'weekly', priority: '0.8' },
   { path: '/sitemap', changefreq: 'monthly', priority: '0.4' },
   { path: '/privacy', changefreq: 'yearly', priority: '0.3' },
 ]
+
+const blogPages = sortedPosts.map((post) => ({
+  path: `/blog/${post.slug}`,
+  changefreq: 'monthly',
+  priority: '0.7',
+  lastmod: post.date,
+}))
 
 // Hand-written walkthroughs rank above the imported module reference.
 const guidePages = guideCategories.flatMap((category) =>
@@ -34,7 +42,7 @@ const guidePages = guideCategories.flatMap((category) =>
   }))
 )
 
-const urls = [...staticPages, ...guidePages]
+const urls = [...staticPages, ...blogPages, ...guidePages]
 
 const xml = [
   '<?xml version="1.0" encoding="UTF-8"?>',
@@ -43,14 +51,20 @@ const xml = [
     [
       '  <url>',
       `    <loc>${ORIGIN}${url.path}</loc>`,
+      url.lastmod ? `    <lastmod>${url.lastmod}</lastmod>` : null,
       `    <changefreq>${url.changefreq}</changefreq>`,
       `    <priority>${url.priority}</priority>`,
       '  </url>',
-    ].join('\n')
+    ]
+      .filter(Boolean)
+      .join('\n')
   ),
   '</urlset>',
   '',
 ].join('\n')
 
 fs.writeFileSync(OUTPUT, xml)
-console.log(`Wrote public/sitemap.xml — ${urls.length} URLs (${guidePages.length} guide pages)`)
+console.log(
+  `Wrote public/sitemap.xml — ${urls.length} URLs ` +
+    `(${blogPages.length} blog posts, ${guidePages.length} guide pages)`
+)

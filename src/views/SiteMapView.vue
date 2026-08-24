@@ -26,6 +26,23 @@
           </ul>
         </div>
 
+        <!-- Blog -->
+        <div class="sitemap-card">
+          <div class="sitemap-card__header">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sitemap-icon">
+              <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9h4"></path>
+              <path d="M18 14h-8M15 18h-5M10 6h8v4h-8V6Z"></path>
+            </svg>
+            <h2>Blog</h2>
+          </div>
+          <ul class="sitemap-list">
+            <li><router-link to="/blog" class="sitemap-link">All posts</router-link></li>
+            <li v-for="post in sortedPosts" :key="post.slug">
+              <router-link :to="`/blog/${post.slug}`" class="sitemap-link">{{ post.title }}</router-link>
+            </li>
+          </ul>
+        </div>
+
         <!-- Documentation Section -->
         <div class="sitemap-card">
           <div class="sitemap-card__header">
@@ -109,6 +126,7 @@
 // A title-only index generated alongside the guide — a few kilobytes, so the
 // page can list every module without loading the documentation itself.
 import { referenceIndex } from '../data/guideIndex.js'
+import { sortedPosts } from '../data/blogPosts.js'
 </script>
 
 <style scoped>

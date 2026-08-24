@@ -25,7 +25,7 @@
           <p class="post-lead">{{ post.excerpt }}</p>
         </header>
 
-        <article class="post-body">
+        <article class="post-body" @click="handleBodyClick">
           <template v-for="(block, i) in post.body" :key="i">
             <h2 v-if="block.type === 'h2'" class="post-h2">{{ block.text }}</h2>
 
@@ -127,14 +127,34 @@
 
 <script setup>
 import { computed, watch, onUnmounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import AppHeader from '../components/AppHeader.vue'
 import AppFooter from '../components/AppFooter.vue'
 import { findPost, relatedTo, categories, formatDate } from '../data/blogPosts.js'
 
 const route = useRoute()
+const router = useRouter()
 
 const post = computed(() => findPost(route.params.slug))
+
+/**
+ * Article bodies are rendered with v-html, so links inside them are plain
+ * anchors. Route the internal ones through the router instead of reloading
+ * the app, and open external ones in a new tab.
+ */
+const handleBodyClick = (e) => {
+  const anchor = e.target.closest('a')
+  if (!anchor) return
+
+  const href = anchor.getAttribute('href') || ''
+  if (href.startsWith('/')) {
+    e.preventDefault()
+    router.push(href)
+  } else if (/^https?:/.test(href)) {
+    anchor.target = '_blank'
+    anchor.rel = 'noopener noreferrer'
+  }
+}
 const related = computed(() => relatedTo(post.value))
 
 const categoryLabel = (id) => categories[id]?.label || id
@@ -270,6 +290,24 @@ onUnmounted(() => {
 
 .post-body :deep(strong) {
   color: var(--text-primary);
+  font-weight: var(--weight-semibold);
+}
+
+.post-body :deep(a) {
+  color: var(--color-amber-hover);
+  font-weight: var(--weight-medium);
+  text-decoration: underline;
+  text-decoration-color: var(--color-amber-glow);
+  text-underline-offset: 3px;
+  transition: text-decoration-color var(--duration-fast) var(--ease-out);
+}
+
+.post-body :deep(a:hover) {
+  text-decoration-color: currentColor;
+}
+
+.post-callout :deep(a) {
+  color: var(--callout-accent);
   font-weight: var(--weight-semibold);
 }
 

@@ -130,6 +130,15 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: var(--space-8);
+  white-space: nowrap;
+}
+
+/* Five links plus two buttons stop fitting well before the burger appears,
+   so the gap tightens through the middle of the range. */
+@media (max-width: 1080px) {
+  .header__nav {
+    gap: var(--space-5);
+  }
 }
 
 .header__link {
@@ -226,7 +235,9 @@ onUnmounted(() => {
   display: none;
 }
 
-@media (max-width: 768px) {
+/* Raised from 768px: the nav now carries five links, and below this width
+   the links and the action buttons compete for the same space. */
+@media (max-width: 900px) {
   .header__nav,
   .header__actions {
     display: none;

@@ -22,6 +22,7 @@
             <li><router-link to="/about" class="sitemap-link">About</router-link></li>
             <li><router-link to="/about#features" class="sitemap-link">Features &amp; Modules</router-link></li>
             <li><router-link to="/about#multi-company" class="sitemap-link">Multi-Company</router-link></li>
+            <li><router-link to="/pricing" class="sitemap-link">Pricing</router-link></li>
             <li><router-link to="/#benefits" class="sitemap-link">Benefits</router-link></li>
             <li><router-link to="/#deployment" class="sitemap-link">Deployment Options</router-link></li>
           </ul>

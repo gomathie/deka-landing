@@ -1057,31 +1057,36 @@ const getCellClass = (cellValue) => {
 
 .guide-step-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--space-3);
   margin-bottom: var(--space-4);
 }
 
-.guide-step-pill {
-  font-size: var(--text-xs);
+/* A fixed-size numbered badge. The old "STEP 1" pill wrapped its own label
+   onto two lines on narrow screens, which collapsed the rounded shape. */
+.guide-step-num {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-lg);
+  background: var(--color-amber);
+  color: var(--color-charcoal);
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
   font-weight: var(--weight-bold);
-  text-transform: uppercase;
-  background: var(--color-charcoal);
-  color: var(--color-white);
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-full);
-}
-
-@media (prefers-color-scheme: dark) {
-  .guide-step-pill {
-    background: var(--color-amber);
-    color: var(--color-charcoal);
-  }
+  line-height: 1;
+  /* Optically centres the digit against the title's first line. */
+  margin-top: 1px;
 }
 
 .guide-step-title {
   font-size: var(--text-2xl);
   font-weight: var(--weight-bold);
+  line-height: var(--leading-snug);
+  min-width: 0;
 }
 
 .guide-step-desc {
@@ -1850,6 +1855,16 @@ const getCellClass = (cellValue) => {
 
   .guide-content {
     padding: var(--space-5) var(--space-4) var(--space-16);
+  }
+
+  .guide-step-title {
+    font-size: var(--text-xl);
+  }
+
+  .guide-step-num {
+    width: 30px;
+    height: 30px;
+    font-size: var(--text-base);
   }
 
   .guide-doc-title {

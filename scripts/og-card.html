@@ -1,0 +1,123 @@
+<!doctype html>
+<!--
+  Source for public/logos/og-image.png.
+  Render with: npm run build:og (renders from disk, so paths are relative)
+  Social platforms reject SVG, so this card is rasterised to a 1200x630 PNG.
+-->
+<html>
+<head>
+  <meta charset="utf-8" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,500;9..40,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 1200px; height: 630px; overflow: hidden; }
+
+    body {
+      position: relative;
+      background: linear-gradient(135deg, #1F2933 0%, #2A3642 100%);
+      color: #F0EDE7;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
+      background-size: 64px 64px;
+      -webkit-mask-image: radial-gradient(ellipse 80% 80% at 70% 30%, #000 20%, transparent 100%);
+    }
+
+    .glow {
+      position: absolute;
+      top: -180px; right: -140px;
+      width: 720px; height: 720px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,159,28,0.30) 0%, transparent 68%);
+      filter: blur(70px);
+    }
+
+    .content {
+      position: relative;
+      height: 100%;
+      padding: 72px 80px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand { display: flex; align-items: center; gap: 18px; }
+
+    /* The mark has charcoal facets that vanish on this background, so it
+       sits on a light plate — the same treatment as the hero hub. */
+    .brand .plate {
+      width: 68px; height: 68px;
+      display: flex; align-items: center; justify-content: center;
+      background: #FFFFFF;
+      border-radius: 18px;
+      box-shadow: 0 0 0 8px rgba(255,159,28,0.14);
+    }
+    .brand img { width: 34px; height: 40px; display: block; }
+    .brand span {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 38px; font-weight: 700;
+      letter-spacing: 0.06em;
+    }
+
+    h1 {
+      margin-top: auto;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 82px;
+      font-weight: 700;
+      line-height: 1.04;
+      letter-spacing: -0.025em;
+    }
+    h1 .accent { color: #FF9F1C; }
+
+    p {
+      margin-top: 26px;
+      font-size: 27px;
+      line-height: 1.45;
+      color: #A8A79F;
+      max-width: 860px;
+    }
+
+    .footer {
+      margin-top: auto;
+      padding-top: 40px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 21px;
+    }
+    .url { color: #FF9F1C; font-weight: 600; }
+    .dot { width: 5px; height: 5px; border-radius: 50%; background: #5A6672; }
+    .meta { color: #8E8D86; }
+  </style>
+</head>
+<body>
+  <div class="grid"></div>
+  <div class="glow"></div>
+
+  <div class="content">
+    <div class="brand">
+      <span class="plate"><img src="../public/logos/logo.svg" alt="" /></span>
+      <span>DEKA ERP</span>
+    </div>
+
+    <h1>One system. Every&nbsp;operation.<br /><span class="accent">Total clarity.</span></h1>
+
+    <p>Sales, purchasing, inventory, manufacturing, accounting and HR in one modular platform. Multi-company built in.</p>
+
+    <div class="footer">
+      <span class="url">dekaerp.com</span>
+      <span class="dot"></span>
+      <span class="meta">Hosted or self-hosted</span>
+      <span class="dot"></span>
+      <span class="meta">14 modules</span>
+    </div>
+  </div>
+</body>
+</html>

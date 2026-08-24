@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "build:guide": "node scripts/build-guide.cjs",
     "build:guide:refresh": "node scripts/build-guide.cjs --refresh",
-    "build:sitemap": "node scripts/build-sitemap.mjs"
+    "build:sitemap": "node scripts/build-sitemap.mjs",
+    "build:og": "node scripts/build-og.mjs"
   },
   "dependencies": {
     "marked": "^18.0.10",

@@ -44,6 +44,32 @@
           </ul>
         </div>
 
+        <!-- Module reference — generated from the documentation itself -->
+        <div class="sitemap-card sitemap-card--wide">
+          <div class="sitemap-card__header">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sitemap-icon">
+              <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+              <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+              <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+              <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+            </svg>
+            <h2>Module Reference</h2>
+          </div>
+          <div class="sitemap-modules">
+            <div v-for="module in referenceIndex" :key="module.id" class="sitemap-module">
+              <h3 class="sitemap-module__name">{{ module.name }}</h3>
+              <ul class="sitemap-list">
+                <li v-for="page in module.pages" :key="page.id">
+                  <router-link :to="`/guide/${page.id}`" class="sitemap-link">
+                    <span v-if="page.group" class="sitemap-link__group">{{ page.group }} ·</span>
+                    {{ page.title }}
+                  </router-link>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
         <!-- Access Section -->
         <div class="sitemap-card">
           <div class="sitemap-card__header">
@@ -78,6 +104,12 @@
     </div>
   </div>
 </template>
+
+<script setup>
+// A title-only index generated alongside the guide — a few kilobytes, so the
+// page can list every module without loading the documentation itself.
+import { referenceIndex } from '../data/guideIndex.js'
+</script>
 
 <style scoped>
 .sitemap-page {
@@ -132,6 +164,31 @@
   padding: var(--space-8);
   border: 1px solid var(--color-sand);
   transition: transform var(--duration-normal) var(--ease-out), box-shadow var(--duration-normal) var(--ease-out);
+}
+
+/* The module reference is long — give it the full row. */
+.sitemap-card--wide {
+  grid-column: 1 / -1;
+}
+
+.sitemap-modules {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-6) var(--space-8);
+}
+
+.sitemap-module__name {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-amber);
+  margin-bottom: var(--space-3);
+}
+
+.sitemap-link__group {
+  color: var(--text-tertiary);
+  font-size: var(--text-xs);
 }
 
 .sitemap-card:hover {

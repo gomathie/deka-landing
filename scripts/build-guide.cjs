@@ -24,6 +24,8 @@ const PROJECT_ROOT = path.join(__dirname, '..');
 const DEFAULT_SRC = path.join(PROJECT_ROOT, '.docs-source');
 const UPSTREAM = 'https://github.com/aureuserp/user-guide.git';
 const OUTPUT_FILE = path.join(PROJECT_ROOT, 'src/data/aureusGuides.js');
+const STATS_FILE = path.join(PROJECT_ROOT, 'src/data/guideStats.js');
+const INDEX_FILE = path.join(PROJECT_ROOT, 'src/data/guideIndex.js');
 
 const argv = process.argv.slice(2);
 const srcArg = argv.find((a) => a.startsWith('--src='));
@@ -141,15 +143,28 @@ function readTimeFor(html) {
   return `${Math.max(2, Math.round(wordCount(html) / 200))} min read`;
 }
 
-function summaryFor(html) {
-  const match = html.match(/<p>([\s\S]*?)<\/p>/);
-  if (!match) return '';
-  let text = stripTags(match[1]);
-  if (text.length > 210) {
-    text = text.slice(0, 210);
-    text = text.slice(0, text.lastIndexOf(' ')) + '…';
+/** Longest opening paragraph still worth promoting into the page lead. */
+const MAX_LEAD_LENGTH = 420;
+
+/**
+ * The opening paragraph of every upstream page is a standalone intro, so it
+ * is promoted to the page lead. Returns the body with that paragraph removed
+ * whenever it is used in full, to avoid printing it twice.
+ */
+function extractLead(html) {
+  const match = html.match(/^\s*<p>([\s\S]*?)<\/p>\s*/);
+  if (!match) return { summary: '', body: html };
+
+  const text = stripTags(match[1]);
+  if (!text) return { summary: '', body: html };
+
+  if (text.length <= MAX_LEAD_LENGTH) {
+    return { summary: text, body: html.slice(match[0].length) };
   }
-  return text;
+
+  // Too long to headline — keep it in the body and lead with an excerpt.
+  const clipped = text.slice(0, 210);
+  return { summary: clipped.slice(0, clipped.lastIndexOf(' ')) + '…', body: html };
 }
 
 /* ─────────────────────────────────────────────
@@ -404,15 +419,17 @@ function build() {
         continue;
       }
 
+      const { summary, body } = extractLead(html);
+
       items.push({
         id: page.slug,
         title: rebrand(page.text),
         group: page.group ? rebrand(page.group) : null,
         module: rebrand(category.text),
         readTime: readTimeFor(html),
-        summary: summaryFor(html),
+        summary,
         toc,
-        htmlContent: html,
+        htmlContent: body.trim(),
       });
     }
 
@@ -440,6 +457,29 @@ function build() {
   fs.writeFileSync(
     OUTPUT_FILE,
     banner + `export const guideCategories = ${JSON.stringify(guideCategories, null, 2)};\n`
+  );
+
+  // Two tiny companion modules so the marketing pages can link to and count
+  // the documentation without pulling the whole corpus into their bundles.
+  fs.writeFileSync(
+    STATS_FILE,
+    [
+      banner,
+      `export const referenceModules = ${guideCategories.length};`,
+      `export const referencePages = ${total};`,
+      '',
+    ].join('\n')
+  );
+
+  const index = guideCategories.map((category) => ({
+    id: category.id,
+    name: category.name,
+    pages: category.items.map(({ id, title, group }) => ({ id, title, group })),
+  }));
+
+  fs.writeFileSync(
+    INDEX_FILE,
+    banner + `export const referenceIndex = ${JSON.stringify(index, null, 2)};\n`
   );
 
   console.log(`\nWrote ${path.relative(PROJECT_ROOT, OUTPUT_FILE)}`);

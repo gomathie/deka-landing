@@ -50,6 +50,40 @@ Per the project brief:
 
 ---
 
+## 📚 User Guide (`/guide`)
+
+The documentation at `/guide` has two sources:
+
+| Source | File | Maintained by |
+|---|---|---|
+| DEKA-specific walkthroughs | `src/data/guideData.js` | Hand-written — edit directly |
+| Module reference (69 pages) | `src/data/aureusGuides.js` | **Generated** — do not edit |
+
+DEKA ERP is a fork of [AureusERP](https://github.com/aureuserp/aureuserp), so the
+functional documentation is the same product. `scripts/build-guide.cjs` imports the
+upstream user guide, rebrands it, strips the upstream (Aureus-branded) screenshots,
+normalises the HTML to our design system, and writes stable slugs such as
+`/guide/sales-orders-quotations`.
+
+```bash
+# Regenerate from the upstream docs (clones into .docs-source on first run)
+npm run build:guide
+
+# Pull upstream changes first, then regenerate
+npm run build:guide:refresh
+
+# Regenerate public/sitemap.xml from the routes + guide data
+npm run build:sitemap
+```
+
+The generator also emits two small companion modules so the marketing pages can
+link to and count the documentation without loading the whole corpus:
+`src/data/guideStats.js` (totals, used by the homepage stats band) and
+`src/data/guideIndex.js` (titles only, used by `/sitemap`). The guide route itself
+is lazy-loaded, so the documentation never lands in the landing-page bundle.
+
+---
+
 ## 🛠️ Local Development
 
 ```bash

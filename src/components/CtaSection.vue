@@ -1,7 +1,7 @@
 <template>
   <section class="cta section" id="contact">
     <div class="container">
-      <div class="cta__inner">
+      <div class="cta__inner" v-reveal>
         <div class="cta__glow"></div>
         <h2 class="cta__title">Ready to run your business<br />in one place?</h2>
         <p class="cta__subtitle">

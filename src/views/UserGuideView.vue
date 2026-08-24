@@ -911,6 +911,7 @@ const getCellClass = (cellValue) => {
 .guide-content {
   padding: var(--space-8) var(--space-12) var(--space-24);
   max-width: 880px;
+  min-width: 0;
 }
 
 .guide-breadcrumb {
@@ -1423,6 +1424,8 @@ const getCellClass = (cellValue) => {
   color: var(--text-secondary);
   font-size: var(--text-base);
   line-height: 1.7;
+  min-width: 0;
+  overflow-wrap: break-word;
 }
 
 .guide-raw-html :deep(> *:first-child) {
@@ -1552,18 +1555,18 @@ const getCellClass = (cellValue) => {
   color: inherit;
 }
 
-/* `Sales → Orders → Quotations` — a menu path, not code. */
+/* `Sales → Orders → Quotations` — a menu path, not code. It has to be
+   allowed to wrap: these paths are long enough to blow out a phone. */
 .guide-raw-html :deep(.doc-path) {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
+  display: inline;
   background: var(--color-amber-glow);
   color: var(--color-amber-hover);
   padding: 0.15em 0.6em;
-  border-radius: var(--radius-full);
-  font-size: 0.875em;
+  border-radius: var(--radius-md);
+  font-size: 0.9em;
   font-weight: var(--weight-semibold);
-  white-space: nowrap;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 }
 
 /* ── Callouts ── */
@@ -1689,7 +1692,7 @@ const getCellClass = (cellValue) => {
 /* ── Responsive ── */
 @media (max-width: 1200px) {
   .guide-body {
-    grid-template-columns: 260px 1fr;
+    grid-template-columns: 260px minmax(0, 1fr);
   }
   .guide-toc {
     display: none;

@@ -1,7 +1,7 @@
 <template>
   <section class="problem section" id="problem">
     <div class="container">
-      <div class="problem__header">
+      <div class="problem__header" v-reveal>
         <span class="section-label">The Problem</span>
         <h2 class="section-title">Spreadsheets don't scale.<br />Disconnected tools don't agree.</h2>
         <p class="section-subtitle">
@@ -10,7 +10,7 @@
         </p>
       </div>
 
-      <div class="problem__grid">
+      <div class="problem__grid" v-reveal.children>
         <div class="problem__card problem__card--before">
           <div class="problem__card-icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>

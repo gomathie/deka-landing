@@ -1,7 +1,7 @@
 <template>
   <section class="modules section" id="features">
     <div class="container">
-      <div class="modules__header">
+      <div class="modules__header" v-reveal>
         <span class="section-label">Modules</span>
         <h2 class="section-title">Install only what you use</h2>
         <p class="section-subtitle">
@@ -10,7 +10,7 @@
         </p>
       </div>
 
-      <div class="modules__grid">
+      <div class="modules__grid" v-reveal.children>
         <div
           v-for="(group, index) in moduleGroups"
           :key="group.name"
@@ -124,10 +124,12 @@ const moduleGroups = [
 .modules__card--make::before { background: #8E44AD; }
 .modules__card--run::before { background: #3498DB; }
 
-.modules__card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
-  border-color: transparent;
+@media (hover: hover) {
+  .modules__card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: transparent;
+  }
 }
 
 .modules__card-header {

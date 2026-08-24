@@ -3,6 +3,7 @@
     <AppHeader />
     <main>
       <HeroSection />
+      <TrustStrip />
       <ProblemSection />
       <ModulesSection />
       <BenefitsSection />
@@ -17,6 +18,7 @@
 <script setup>
 import AppHeader from '../components/AppHeader.vue'
 import HeroSection from '../components/HeroSection.vue'
+import TrustStrip from '../components/TrustStrip.vue'
 import ProblemSection from '../components/ProblemSection.vue'
 import ModulesSection from '../components/ModulesSection.vue'
 import BenefitsSection from '../components/BenefitsSection.vue'

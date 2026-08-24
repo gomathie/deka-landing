@@ -1,7 +1,7 @@
 <template>
   <section class="deploy section" id="deployment">
     <div class="container">
-      <div class="deploy__header">
+      <div class="deploy__header" v-reveal>
         <span class="section-label">Deployment</span>
         <h2 class="section-title">Your infrastructure, or ours</h2>
         <p class="section-subtitle">
@@ -10,7 +10,7 @@
         </p>
       </div>
 
-      <div class="deploy__grid">
+      <div class="deploy__grid" v-reveal.children>
         <div class="deploy__card">
           <div class="deploy__card-badge">Popular</div>
           <div class="deploy__card-icon">

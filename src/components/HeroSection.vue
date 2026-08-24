@@ -1,5 +1,12 @@
 <template>
   <section class="hero" id="hero">
+    <!-- Decorative depth: a soft brand glow over a faint blueprint grid -->
+    <div class="hero__backdrop" aria-hidden="true">
+      <div class="hero__grid-texture"></div>
+      <div class="hero__glow hero__glow--amber"></div>
+      <div class="hero__glow hero__glow--cool"></div>
+    </div>
+
     <div class="container hero__inner">
       <div class="hero__content">
         <div class="badge animate-in">
@@ -47,6 +54,30 @@
 
       <div class="hero__visual animate-in animate-in-delay-2">
         <div class="hero__graphic">
+          <!--
+            The shared backbone every module plugs into. It is drawn along
+            the gutters between the cards so it stays visible, with a pulse
+            travelling outwards from the hub at the centre.
+          -->
+          <svg class="hero__wires" viewBox="0 0 400 400" fill="none" aria-hidden="true">
+            <g stroke="var(--color-amber)" stroke-linecap="round" opacity="0.4">
+              <path stroke-width="1.5" d="M24 200 H376" />
+              <path stroke-width="1.5" d="M200 24 V376" />
+            </g>
+            <g class="hero__wire-flow" stroke="var(--color-amber)" stroke-width="2.5" stroke-linecap="round">
+              <path d="M200 200 H376" />
+              <path d="M200 200 H24" />
+              <path d="M200 200 V24" />
+              <path d="M200 200 V376" />
+            </g>
+            <g fill="var(--color-amber)" opacity="0.55">
+              <circle cx="24" cy="200" r="3" />
+              <circle cx="376" cy="200" r="3" />
+              <circle cx="200" cy="24" r="3" />
+              <circle cx="200" cy="376" r="3" />
+            </g>
+          </svg>
+
           <div class="hero__hex-grid">
             <!-- Abstract hexagonal ERP module visualization -->
             <div class="hero__hex hero__hex--sell">
@@ -106,7 +137,68 @@
   }
 }
 
+/* ── Decorative backdrop ── */
+.hero__backdrop {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.hero__grid-texture {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(31, 41, 51, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(31, 41, 51, 0.045) 1px, transparent 1px);
+  background-size: 64px 64px;
+  /* Fade the grid out towards the edges so it reads as texture, not a table. */
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 35%, #000 30%, transparent 100%);
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 35%, #000 30%, transparent 100%);
+}
+
+.hero__glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+}
+
+.hero__glow--amber {
+  top: -14%;
+  right: 2%;
+  width: 46vw;
+  max-width: 620px;
+  aspect-ratio: 1;
+  background: radial-gradient(circle, rgba(255, 159, 28, 0.28) 0%, transparent 70%);
+}
+
+.hero__glow--cool {
+  bottom: -22%;
+  left: -8%;
+  width: 38vw;
+  max-width: 520px;
+  aspect-ratio: 1;
+  background: radial-gradient(circle, rgba(90, 130, 180, 0.16) 0%, transparent 70%);
+}
+
+@media (prefers-color-scheme: dark) {
+  .hero__grid-texture {
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  }
+
+  .hero__glow--amber {
+    background: radial-gradient(circle, rgba(255, 159, 28, 0.18) 0%, transparent 70%);
+  }
+
+  .hero__glow--cool {
+    background: radial-gradient(circle, rgba(90, 130, 180, 0.14) 0%, transparent 70%);
+  }
+}
+
 .hero__inner {
+  position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-16);
@@ -165,9 +257,43 @@
   height: 400px;
 }
 
+/* Wires sit under the cards but over the pulse rings. */
+.hero__wires {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Each spoke is 176 units long: a 26-unit dash chased by a 176-unit gap
+   reads as a single pulse leaving the hub. */
+.hero__wire-flow path {
+  stroke-dasharray: 26 176;
+  animation: hero-wire-flow 3.6s var(--ease-in-out) infinite;
+}
+
+.hero__wire-flow path:nth-child(2) { animation-delay: 0.9s; }
+.hero__wire-flow path:nth-child(3) { animation-delay: 1.8s; }
+.hero__wire-flow path:nth-child(4) { animation-delay: 2.7s; }
+
+@keyframes hero-wire-flow {
+  0% { stroke-dashoffset: 26; opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { stroke-dashoffset: -176; opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__wire-flow {
+    display: none;
+  }
+}
+
 .hero__hex-grid {
   position: absolute;
   inset: 0;
+  z-index: 2;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
@@ -189,9 +315,11 @@
   cursor: default;
 }
 
-.hero__hex:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
+@media (hover: hover) {
+  .hero__hex:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: var(--shadow-lg);
+  }
 }
 
 .hero__hex--sell {
@@ -253,9 +381,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: var(--shadow-lg);
-  z-index: 2;
-  border: 2px solid var(--color-amber-glow);
+  box-shadow: var(--shadow-lg), 0 0 0 8px var(--color-amber-glow);
+  z-index: 3;
+  border: 2px solid rgba(255, 159, 28, 0.35);
 }
 
 .hero__center-logo img {
@@ -322,8 +450,11 @@
     justify-content: center;
   }
 
+  /* Once the hero stacks, the headline and CTAs come first — the graphic
+     is decorative and should not push the pitch below the fold. */
   .hero__visual {
-    order: -1;
+    order: 1;
+    margin-top: var(--space-10);
   }
 
   .hero__graphic {

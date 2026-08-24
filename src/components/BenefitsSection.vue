@@ -1,7 +1,7 @@
 <template>
   <section class="benefits section" id="benefits">
     <div class="container">
-      <div class="benefits__header">
+      <div class="benefits__header" v-reveal>
         <span class="section-label">Benefits</span>
         <h2 class="section-title">Outcomes, not features</h2>
         <p class="section-subtitle">
@@ -9,7 +9,7 @@
         </p>
       </div>
 
-      <div class="benefits__grid">
+      <div class="benefits__grid" v-reveal.children>
         <div v-for="benefit in benefits" :key="benefit.title" class="benefits__card">
           <div class="benefits__card-icon" v-html="benefit.icon"></div>
           <h3 class="benefits__card-title">{{ benefit.title }}</h3>
@@ -88,10 +88,12 @@ const benefits = [
   transition: all var(--duration-normal) var(--ease-out);
 }
 
-.benefits__card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
-  border-color: var(--color-amber-glow);
+@media (hover: hover) {
+  .benefits__card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-amber-light);
+  }
 }
 
 .benefits__card-icon {

@@ -2,7 +2,7 @@
   <section class="multicompany section" id="multi-company">
     <div class="container">
       <div class="multicompany__inner">
-        <div class="multicompany__content">
+        <div class="multicompany__content" v-reveal>
           <span class="section-label">Differentiator</span>
           <h2 class="section-title">Multi-company is built in. Not bolted on.</h2>
           <p class="section-subtitle">
@@ -49,7 +49,7 @@
           </a>
         </div>
 
-        <div class="multicompany__visual">
+        <div class="multicompany__visual" v-reveal="{ delay: 120 }">
           <div class="multicompany__switcher">
             <div class="multicompany__switcher-header">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>

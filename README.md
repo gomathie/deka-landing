@@ -17,10 +17,20 @@ Built strictly following the official DEKA ERP brand guide and palette:
 | **Off-White** | `#F5F6F8` | Page background |
 
 Brand assets are located in:
-- `SVG/logo-full-light.svg` & `public/logos/logo-full-light.svg` (for light backgrounds)
-- `SVG/logo-full-dark.svg` & `public/logos/logo-full-dark.svg` (for dark backgrounds)
-- `SVG/logo.svg` & `public/logos/logo.svg` (icon mark)
+- `public/logos/logo-full-light.svg` (wordmark for light backgrounds)
+- `public/logos/logo-full-dark.svg` (wordmark for dark backgrounds)
+- `public/logos/logo.svg` (icon mark)
+- `public/logos/og-image.png` (1200×630 social share card — **generated**, see below)
 - `landing-page-brief.md` (official project specification & copy guidelines)
+
+### Social share image
+
+Facebook, LinkedIn, Slack and X all reject SVG for `og:image`, so the share card
+ships as a PNG. `scripts/og-card.html` is the source; `npm run build:og`
+rasterises it to `public/logos/og-image.png` at 1200×630 using the system Chrome
+or Edge in headless mode — no image dependency. Edit the card and re-run the
+script to change it; `index.html` already carries the matching `og:image:width`,
+`og:image:height` and `twitter:card="summary_large_image"` tags.
 
 ---
 

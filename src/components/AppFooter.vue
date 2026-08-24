@@ -27,7 +27,7 @@
         <div class="footer__col">
           <h4 class="footer__col-title">Access</h4>
           <a href="https://cloud.dekaerp.com" class="footer__link">Get Started</a>
-          <a href="https://cloud.dekaerp.com/admin/login" class="footer__link">Sign In</a>
+          <a href="https://cloud.dekaerp.com" class="footer__link">Sign In</a>
         </div>
         <div class="footer__col">
           <h4 class="footer__col-title">Legal</h4>

@@ -46,7 +46,7 @@ Brand assets are located in:
 
 Per the project brief:
 - **Get Started / CTAs**: `https://cloud.dekaerp.com`
-- **Sign In**: `https://cloud.dekaerp.com/admin/login`
+- **Sign In**: `https://cloud.dekaerp.com` (the app routes unauthenticated visitors to its login screen)
 
 ---
 

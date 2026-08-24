@@ -17,7 +17,7 @@
       </nav>
 
       <div class="header__actions">
-        <a href="https://cloud.dekaerp.com/admin/login" class="btn btn--ghost header__signin" id="header-signin">Sign In</a>
+        <a href="https://cloud.dekaerp.com" class="btn btn--ghost header__signin" id="header-signin">Sign In</a>
         <a href="https://cloud.dekaerp.com" class="btn btn--primary header__cta" id="header-cta">Get Started</a>
       </div>
 
@@ -47,7 +47,7 @@
           📖 User Guide &amp; Feature Walkthroughs
         </router-link>
         <div class="header__mobile-actions">
-          <a href="https://cloud.dekaerp.com/admin/login" class="btn btn--secondary btn--large" @click="closeMenu">Sign In</a>
+          <a href="https://cloud.dekaerp.com" class="btn btn--secondary btn--large" @click="closeMenu">Sign In</a>
           <a href="https://cloud.dekaerp.com" class="btn btn--primary btn--large" @click="closeMenu">Get Started</a>
         </div>
       </nav>

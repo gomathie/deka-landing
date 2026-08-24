@@ -82,7 +82,7 @@
           </div>
           <ul class="sitemap-list">
             <li><a href="https://cloud.dekaerp.com" class="sitemap-link">Get Started (Register)</a></li>
-            <li><a href="https://cloud.dekaerp.com/admin/login" class="sitemap-link">Sign In</a></li>
+            <li><a href="https://cloud.dekaerp.com" class="sitemap-link">Sign In</a></li>
           </ul>
         </div>
 

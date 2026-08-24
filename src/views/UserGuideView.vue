@@ -34,7 +34,7 @@
           </svg>
           Main site
         </router-link>
-        <a href="https://cloud.dekaerp.com/admin/login" class="btn btn--ghost btn--sm guide-header__signin">Sign in</a>
+        <a href="https://cloud.dekaerp.com" class="btn btn--ghost btn--sm guide-header__signin">Sign in</a>
         <a href="https://cloud.dekaerp.com" class="btn btn--primary btn--sm guide-header__cta">Open cloud app</a>
 
         <!-- Mobile sidebar trigger -->
@@ -182,7 +182,7 @@
               class="guide-step-section"
             >
               <div class="guide-step-header">
-                <div class="guide-step-pill">Step {{ stepIndex + 1 }}</div>
+                <span class="guide-step-num" aria-hidden="true">{{ stepIndex + 1 }}</span>
                 <h2 class="guide-step-title">{{ step.title }}</h2>
               </div>
 
@@ -284,20 +284,37 @@
               class="guide-nav-btn guide-nav-btn--prev"
               @click="selectSection(prevGuide.id)"
             >
-              <span class="guide-nav-btn__dir">← Previous Guide</span>
-              <span class="guide-nav-btn__name">{{ prevGuide.title }}</span>
+              <svg class="guide-nav-btn__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+              <span class="guide-nav-btn__text">
+                <span class="guide-nav-btn__dir">Previous</span>
+                <span class="guide-nav-btn__name">{{ prevGuide.title }}</span>
+              </span>
             </button>
-            <div v-else></div>
+            <div v-else class="guide-nav-btn-spacer"></div>
 
             <button
               v-if="nextGuide"
               class="guide-nav-btn guide-nav-btn--next"
               @click="selectSection(nextGuide.id)"
             >
-              <span class="guide-nav-btn__dir">Next Guide →</span>
-              <span class="guide-nav-btn__name">{{ nextGuide.title }}</span>
+              <span class="guide-nav-btn__text">
+                <span class="guide-nav-btn__dir">Next</span>
+                <span class="guide-nav-btn__name">{{ nextGuide.title }}</span>
+              </span>
+              <svg class="guide-nav-btn__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
             </button>
           </footer>
+
+          <!-- On phones the sidebar CTA and the header actions are both
+               hidden, so the page would otherwise offer no way into the app. -->
+          <aside class="guide-mobile-cta">
+            <p class="guide-mobile-cta__text">Ready to try these steps on your own DEKA instance?</p>
+            <a href="https://cloud.dekaerp.com" class="btn btn--primary btn--block">Open DEKA Cloud</a>
+          </aside>
         </div>
       </main>
 
@@ -1322,10 +1339,10 @@ const getCellClass = (cellValue) => {
 
 /* ── Bottom Pagination ── */
 .guide-footer-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--space-4);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: var(--space-3);
   margin-top: var(--space-16);
   padding-top: var(--space-8);
   border-top: 1px solid var(--color-sand);
@@ -1333,17 +1350,32 @@ const getCellClass = (cellValue) => {
 
 .guide-nav-btn {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: var(--space-3) var(--space-5);
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+  padding: var(--space-4) var(--space-5);
   background: var(--color-white);
   border: 1px solid var(--color-sand);
   border-radius: var(--radius-xl);
-  transition: all var(--duration-fast) var(--ease-out);
-  max-width: 320px;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-normal) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
   cursor: pointer;
   user-select: none;
   text-align: left;
+}
+
+.guide-nav-btn__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.guide-nav-btn__icon {
+  flex-shrink: 0;
+  color: var(--color-amber);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -1353,24 +1385,27 @@ const getCellClass = (cellValue) => {
   }
 }
 
-.guide-nav-btn:hover {
-  border-color: var(--color-amber);
-  box-shadow: var(--shadow-sm);
-  transform: translateY(-1px);
+@media (hover: hover) {
+  .guide-nav-btn:hover {
+    border-color: var(--color-amber);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
 }
 
 .guide-nav-btn:active {
-  transform: translateY(0) scale(0.98);
+  transform: translateY(0) scale(0.985);
 }
 
 .guide-nav-btn--next {
   text-align: right;
-  margin-left: auto;
+  justify-content: flex-end;
 }
 
 .guide-nav-btn__dir {
   font-size: 11px;
   font-weight: var(--weight-bold);
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--color-amber);
 }
@@ -1379,6 +1414,24 @@ const getCellClass = (cellValue) => {
   font-size: var(--text-sm);
   font-weight: var(--weight-semibold);
   color: var(--text-primary);
+  line-height: var(--leading-snug);
+}
+
+/* Only shown where the sidebar CTA and header actions are hidden. */
+.guide-mobile-cta {
+  display: none;
+  margin-top: var(--space-10);
+  padding: var(--space-6);
+  background: var(--color-white);
+  border: 1px solid var(--color-sand);
+  border-radius: var(--radius-xl);
+  text-align: center;
+}
+
+.guide-mobile-cta__text {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-4);
 }
 
 /* ── Right Table of Contents ── */
@@ -1694,8 +1747,14 @@ const getCellClass = (cellValue) => {
   .guide-body {
     grid-template-columns: 260px minmax(0, 1fr);
   }
+
+  /* The on-page outline goes, and with it the only in-page CTA. */
   .guide-toc {
     display: none;
+  }
+
+  .guide-mobile-cta {
+    display: block;
   }
 }
 
@@ -1764,6 +1823,23 @@ const getCellClass = (cellValue) => {
 
   .guide-content {
     padding: var(--space-6) var(--space-6) var(--space-16);
+  }
+}
+
+@media (max-width: 620px) {
+  /* Side by side these two squeeze guide titles into three-word columns. */
+  .guide-footer-nav {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .guide-nav-btn-spacer {
+    display: none;
+  }
+
+  /* Both read left to right once stacked; the chevron keeps to its edge. */
+  .guide-nav-btn--next {
+    justify-content: space-between;
+    text-align: left;
   }
 }
 

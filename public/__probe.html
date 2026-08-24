@@ -26,7 +26,7 @@ iframe{border:0;background:#fff;display:block}
     frame.addEventListener('load', function () {
       var doc = frame.contentDocument;
       var kill = doc.createElement('style');
-      kill.textContent = '*{transition-duration:0s !important;animation-duration:0s !important}';
+      kill.textContent = 'html{scroll-behavior:auto !important}*{transition-duration:0s !important;animation-duration:0s !important}';
       doc.head.appendChild(kill);
       setTimeout(function () {
         if (bottom) frame.contentWindow.scrollTo(0, doc.body.scrollHeight);

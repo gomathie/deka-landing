@@ -19,12 +19,12 @@ const customCategories = [
             title: 'Sign In to Your DEKA ERP Cloud Instance',
             description: 'Access the admin console with your assigned credentials. DEKA ERP uses secure tokenized sessions with full audit logging.',
             instructions: [
-              'Navigate to <strong>https://cloud.dekaerp.com/admin/login</strong> in your web browser.',
+              'Navigate to <strong>cloud.dekaerp.com</strong> in your web browser.',
               'Enter your registered email address and password.',
               'If two-factor authentication (2FA) is enabled for your profile, enter the 6-digit authenticator code.',
               'Click <strong>Sign In</strong> to land on your company dashboard.'
             ],
-            tip: 'You can bookmark cloud.dekaerp.com/admin for 1-click access. Your active company context is preserved across sessions.',
+            tip: 'Bookmark cloud.dekaerp.com for 1-click access — that one address is all you need. Your active company context is preserved across sessions.',
             uiPreview: {
               title: 'DEKA ERP Admin Console',
               module: 'Auth',

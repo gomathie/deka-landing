@@ -1,5 +1,5 @@
 <template>
-  <header class="header" :class="{ 'header--scrolled': isScrolled }" id="site-header">
+  <header class="header" :class="{ 'header--scrolled': isScrolled || solid }" id="site-header">
     <div class="container header__inner">
       <router-link to="/" class="header__logo" aria-label="DEKA ERP Home">
         <img src="/logos/logo-full-light.svg" alt="DEKA ERP" class="header__logo-img header__logo-img--light" width="126" height="35" />
@@ -60,6 +60,16 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
+
+/**
+ * `solid` keeps the header's background painted at scroll position 0.
+ * On the landing page the header floats transparently over the hero, but
+ * on pages that start with content directly beneath it — the user guide —
+ * a transparent bar reads as broken.
+ */
+defineProps({
+  solid: { type: Boolean, default: false },
+})
 
 const route = useRoute()
 const isScrolled = ref(false)
@@ -168,8 +178,15 @@ onUnmounted(() => {
   color: var(--text-primary);
 }
 
-.header__link:hover::after {
+.header__link:hover::after,
+.header__link.router-link-active::after {
   width: 100%;
+}
+
+/* Route links (Blog, User Guide) mark themselves on their own section. */
+.header__link.router-link-active {
+  color: var(--text-primary);
+  font-weight: var(--weight-semibold);
 }
 
 .header__guide-pill {

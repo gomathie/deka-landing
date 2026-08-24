@@ -1,12 +1,29 @@
 <template>
   <div class="guide-layout">
-    <!-- Top Navigation Bar -->
-    <header class="guide-header">
+    <AppHeader solid />
+
+    <!-- Documentation toolbar, below the site navigation -->
+    <div class="guide-header">
       <div class="guide-header__left">
-        <router-link to="/" class="guide-header__logo" aria-label="DEKA ERP Home">
-          <img src="/logos/logo-full-light.svg" alt="DEKA ERP" height="28" />
-        </router-link>
-        <span class="guide-header__badge">User Guide</span>
+        <!-- A panel icon and a label, deliberately not a second hamburger:
+             the site header already owns one directly above this row. -->
+        <button
+          class="btn btn--secondary btn--sm guide-mobile-menu-btn"
+          @click="isMobileMenuOpen = !isMobileMenuOpen"
+          :aria-expanded="isMobileMenuOpen"
+          aria-controls="guide-sidebar"
+        >
+          <svg v-if="!isMobileMenuOpen" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+            <line x1="9" y1="3" x2="9" y2="21"></line>
+          </svg>
+          <svg v-else width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+          {{ isMobileMenuOpen ? 'Close' : 'Contents' }}
+        </button>
+        <span class="guide-header__badge">Documentation</span>
       </div>
 
       <!-- Search Bar -->
@@ -27,35 +44,10 @@
       </div>
 
       <div class="guide-header__right">
-        <router-link to="/" class="btn btn--secondary btn--sm guide-header__btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="19" y1="12" x2="5" y2="12"></line>
-            <polyline points="12 19 5 12 12 5"></polyline>
-          </svg>
-          Main site
-        </router-link>
-        <a href="https://cloud.dekaerp.com" class="btn btn--ghost btn--sm guide-header__signin">Sign in</a>
+        <span class="guide-header__scope">{{ totalGuides }} guides</span>
         <a href="https://cloud.dekaerp.com" class="btn btn--primary btn--sm guide-header__cta">Open cloud app</a>
-
-        <!-- Mobile sidebar trigger -->
-        <button
-          class="btn btn--icon guide-mobile-menu-btn"
-          @click="isMobileMenuOpen = !isMobileMenuOpen"
-          :aria-expanded="isMobileMenuOpen"
-          aria-label="Toggle navigation menu"
-        >
-          <svg v-if="!isMobileMenuOpen" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="3" y1="12" x2="21" y2="12"></line>
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <line x1="3" y1="18" x2="21" y2="18"></line>
-          </svg>
-          <svg v-else width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
       </div>
-    </header>
+    </div>
 
     <!-- Main Container: Sidebar + Content + On-page ToC -->
     <div class="guide-body">
@@ -67,7 +59,7 @@
       ></div>
 
       <!-- Left Sidebar: Categories & Guides -->
-      <aside class="guide-sidebar" :class="{ 'guide-sidebar--open': isMobileMenuOpen }">
+      <aside id="guide-sidebar" class="guide-sidebar" :class="{ 'guide-sidebar--open': isMobileMenuOpen }">
         <div class="guide-sidebar__header">
           <span class="guide-sidebar__title">DEKA ERP Documentation</span>
           <span class="guide-sidebar__subtitle">{{ totalGuides }} guides across {{ guideCategories.length }} modules</span>
@@ -349,6 +341,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import AppHeader from '../components/AppHeader.vue'
 import { guideCategories } from '../data/guideData.js'
 
 const route = useRoute()
@@ -454,12 +447,15 @@ const pageOutline = computed(() => {
   return []
 })
 
+// Site header (72) + documentation toolbar (56) + breathing room.
+const SCROLL_OFFSET = 152
+
 const activeHeading = ref('')
 
 const jumpTo = (id) => {
   const el = document.getElementById(id)
   if (!el) return
-  const top = el.getBoundingClientRect().top + window.scrollY - 96
+  const top = el.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET
   window.scrollTo({ top, behavior: 'smooth' })
   history.replaceState(null, '', `#${id}`)
 }
@@ -468,7 +464,7 @@ const syncActiveHeading = () => {
   let current = ''
   for (const entry of pageOutline.value) {
     const el = document.getElementById(entry.id)
-    if (el && el.getBoundingClientRect().top <= 140) current = entry.id
+    if (el && el.getBoundingClientRect().top <= SCROLL_OFFSET + 40) current = entry.id
   }
   activeHeading.value = current || (pageOutline.value[0]?.id ?? '')
 }
@@ -609,18 +605,24 @@ const getCellClass = (cellValue) => {
 
 <style scoped>
 .guide-layout {
+  /* The site header is fixed, the documentation toolbar sticks below it.
+     Everything that pins itself measures from the two together. */
+  --guide-toolbar: 56px;
+  --guide-chrome: calc(var(--header-height) + var(--guide-toolbar));
+
   min-height: 100vh;
+  padding-top: var(--header-height);
   background-color: var(--color-off-white);
   display: flex;
   flex-direction: column;
 }
 
-/* ── Top Header ── */
+/* ── Documentation toolbar ── */
 .guide-header {
   position: sticky;
-  top: 0;
+  top: var(--header-height);
   z-index: 50;
-  height: var(--header-height);
+  height: var(--guide-toolbar);
   background: rgba(245, 246, 248, 0.95);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -644,11 +646,6 @@ const getCellClass = (cellValue) => {
   align-items: center;
   gap: var(--space-4);
   flex-shrink: 0;
-}
-
-.guide-header__logo img {
-  height: 26px;
-  width: auto;
 }
 
 .guide-header__badge {
@@ -721,6 +718,12 @@ const getCellClass = (cellValue) => {
   appearance: none;
 }
 
+.guide-header__scope {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
 .guide-header__right {
   display: flex;
   align-items: center;
@@ -739,7 +742,7 @@ const getCellClass = (cellValue) => {
   max-width: 1560px;
   width: 100%;
   margin: 0 auto;
-  min-height: calc(100vh - var(--header-height));
+  min-height: calc(100vh - var(--guide-chrome));
 }
 
 .guide-sidebar-backdrop {
@@ -749,8 +752,8 @@ const getCellClass = (cellValue) => {
 /* ── Left Sidebar ── */
 .guide-sidebar {
   position: sticky;
-  top: var(--header-height);
-  height: calc(100vh - var(--header-height));
+  top: var(--guide-chrome);
+  height: calc(100vh - var(--guide-chrome));
   overflow-y: auto;
   border-right: 1px solid var(--color-sand);
   padding: var(--space-6) var(--space-4) var(--space-12);
@@ -1442,8 +1445,8 @@ const getCellClass = (cellValue) => {
 /* ── Right Table of Contents ── */
 .guide-toc {
   position: sticky;
-  top: var(--header-height);
-  height: calc(100vh - var(--header-height));
+  top: var(--guide-chrome);
+  height: calc(100vh - var(--guide-chrome));
   overflow-y: auto;
   border-left: 1px solid var(--color-sand);
   padding: var(--space-8) var(--space-6);
@@ -1495,7 +1498,7 @@ const getCellClass = (cellValue) => {
 .guide-raw-html :deep(.doc-heading) {
   position: relative;
   color: var(--text-primary);
-  scroll-margin-top: calc(var(--header-height) + var(--space-6));
+  scroll-margin-top: calc(var(--guide-chrome) + var(--space-6));
 }
 
 .guide-raw-html :deep(.doc-heading--h2) {
@@ -1776,8 +1779,7 @@ const getCellClass = (cellValue) => {
     max-width: unset;
   }
 
-  .guide-header__signin,
-  .guide-header__btn,
+  .guide-header__scope,
   .guide-header__cta,
   .guide-header__kbd {
     display: none;
@@ -1793,10 +1795,10 @@ const getCellClass = (cellValue) => {
 
   .guide-sidebar {
     position: fixed;
-    top: var(--header-height);
+    top: var(--guide-chrome);
     left: 0;
     width: min(320px, 85vw);
-    height: calc(100dvh - var(--header-height));
+    height: calc(100dvh - var(--guide-chrome));
     z-index: 90;
     transform: translateX(-100%);
     transition: transform var(--duration-normal) var(--ease-out);
@@ -1812,7 +1814,7 @@ const getCellClass = (cellValue) => {
     display: block;
     position: fixed;
     inset: 0;
-    top: var(--header-height);
+    top: var(--guide-chrome);
     background: rgba(21, 27, 33, 0.5);
     backdrop-filter: blur(2px);
     z-index: 80;

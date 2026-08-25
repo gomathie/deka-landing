@@ -12,10 +12,10 @@
           the exact-match class do the highlighting instead.
         -->
         <router-link to="/" class="header__link" active-class="header__link--root" @click="closeMenu">Home</router-link>
-        <router-link to="/about" class="header__link" @click="closeMenu">About</router-link>
-        <router-link to="/pricing" class="header__link" @click="closeMenu">Pricing</router-link>
+        <a :href="isHomePage ? '#features' : '/#features'" class="header__link" @click="closeMenu">Features</a>
         <a :href="isHomePage ? '#benefits' : '/#benefits'" class="header__link" @click="closeMenu">Benefits</a>
         <a :href="isHomePage ? '#deployment' : '/#deployment'" class="header__link" @click="closeMenu">Deployment</a>
+        <a :href="isHomePage ? '#pricing' : '/#pricing'" class="header__link" @click="closeMenu">Pricing</a>
         <router-link to="/blog" class="header__link" @click="closeMenu">Blog</router-link>
         <router-link to="/guide" class="header__link header__link--guide" @click="closeMenu">
           <span>User Guide</span>
@@ -47,10 +47,10 @@
     <div class="header__overlay" :class="{ 'header__overlay--visible': menuOpen }" @click="closeMenu">
       <nav class="header__mobile-nav" @click.stop>
         <router-link to="/" class="header__mobile-link" active-class="header__link--root" @click="closeMenu">Home</router-link>
-        <router-link to="/about" class="header__mobile-link" @click="closeMenu">About</router-link>
-        <router-link to="/pricing" class="header__mobile-link" @click="closeMenu">Pricing</router-link>
+        <a :href="isHomePage ? '#features' : '/#features'" class="header__mobile-link" @click="closeMenu">Features</a>
         <a :href="isHomePage ? '#benefits' : '/#benefits'" class="header__mobile-link" @click="closeMenu">Benefits</a>
         <a :href="isHomePage ? '#deployment' : '/#deployment'" class="header__mobile-link" @click="closeMenu">Deployment</a>
+        <a :href="isHomePage ? '#pricing' : '/#pricing'" class="header__mobile-link" @click="closeMenu">Pricing</a>
         <router-link to="/blog" class="header__mobile-link" @click="closeMenu">Blog</router-link>
         <router-link to="/guide" class="header__mobile-link header__mobile-link--guide" @click="closeMenu">
           📖 User Guide &amp; Feature Walkthroughs

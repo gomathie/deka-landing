@@ -736,12 +736,13 @@ const getCellClass = (cellValue) => {
 }
 
 /* ── Guide Body Grid ── */
+/* The rails anchor to the viewport edges rather than sitting inside a capped
+   container — a centred grid leaves the sidebar floating in a grey gutter.
+   The reading column is centred within its own track instead. */
 .guide-body {
   display: grid;
-  grid-template-columns: 290px minmax(0, 1fr) 250px;
-  max-width: 1560px;
+  grid-template-columns: 300px minmax(0, 1fr) 264px;
   width: 100%;
-  margin: 0 auto;
   min-height: calc(100vh - var(--guide-chrome));
 }
 
@@ -756,7 +757,8 @@ const getCellClass = (cellValue) => {
   height: calc(100vh - var(--guide-chrome));
   overflow-y: auto;
   border-right: 1px solid var(--color-sand);
-  padding: var(--space-6) var(--space-4) var(--space-12);
+  /* Extra padding on the outer edge — this rail now meets the viewport. */
+  padding: var(--space-6) var(--space-4) var(--space-12) var(--space-6);
   background: var(--color-white);
 }
 
@@ -928,9 +930,14 @@ const getCellClass = (cellValue) => {
 }
 
 /* ── Central Main Content ── */
+/* 720px less 40px of padding each side gives roughly 80 characters per line —
+   the previous 880px column ran to nearly 100, which is past comfortable
+   reading. Centred so the leftover space is even on both sides. */
 .guide-content {
-  padding: var(--space-8) var(--space-12) var(--space-24);
-  max-width: 880px;
+  width: 100%;
+  max-width: 720px;
+  margin-inline: auto;
+  padding: var(--space-8) var(--space-10) var(--space-24);
   min-width: 0;
 }
 
@@ -1449,7 +1456,8 @@ const getCellClass = (cellValue) => {
   height: calc(100vh - var(--guide-chrome));
   overflow-y: auto;
   border-left: 1px solid var(--color-sand);
-  padding: var(--space-8) var(--space-6);
+  /* Extra padding on the outer edge — this rail now meets the viewport. */
+  padding: var(--space-8) var(--space-8) var(--space-8) var(--space-6);
   font-size: var(--text-xs);
 }
 

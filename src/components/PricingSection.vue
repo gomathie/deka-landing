@@ -1,13 +1,11 @@
 <template>
-  <div class="pricing-view">
-    <AppHeader solid />
-
-    <main>
+  <div class="pricing" id="pricing">
+    <div>
       <!-- Header + billing toggle -->
       <section class="pricing-hero">
         <div class="container pricing-hero__inner">
           <span class="section-label">Pricing</span>
-          <h1 class="pricing-hero__title">Priced by what you run, not per module</h1>
+          <h2 class="pricing-hero__title">Priced by what you run, not per module</h2>
           <p class="pricing-hero__lead">
             Every plan includes multi-company, the full user guide and daily backups.
             No setup fee, no per-module upsell, and no charge for customers using the portal.
@@ -169,18 +167,12 @@
         </div>
       </section>
 
-      <CtaSection />
-    </main>
-
-    <AppFooter />
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
-import AppHeader from '../components/AppHeader.vue'
-import AppFooter from '../components/AppFooter.vue'
-import CtaSection from '../components/CtaSection.vue'
+import { ref } from 'vue'
 import {
   tiers,
   comparison,
@@ -194,25 +186,17 @@ import {
 // Annual is the default because it is the cheaper option — showing the higher
 // monthly figure first would misrepresent the price most customers pay.
 const annual = ref(true)
-
-onMounted(() => {
-  document.title = 'Pricing — DEKA ERP'
-})
-
-onUnmounted(() => {
-  document.title = 'DEKA ERP'
-})
 </script>
 
 <style scoped>
-.pricing-view {
-  min-height: 100vh;
+.pricing {
   background-color: var(--color-off-white);
+  scroll-margin-top: var(--header-height);
 }
 
 /* ── Header ── */
 .pricing-hero {
-  padding: calc(var(--header-height) + var(--space-16)) 0 var(--space-12);
+  padding: var(--space-20) 0 var(--space-12);
   background: linear-gradient(180deg, var(--color-off-white) 0%, var(--color-sand-light) 100%);
 }
 
@@ -617,7 +601,7 @@ onUnmounted(() => {
 
 @media (max-width: 560px) {
   .pricing-hero {
-    padding-top: calc(var(--header-height) + var(--space-10));
+    padding-top: var(--space-12);
   }
 
   .pricing-hero__title {

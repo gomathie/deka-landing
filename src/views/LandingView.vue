@@ -8,8 +8,8 @@
       <ModulesSection />
       <BenefitsSection />
       <MultiCompanySection />
-      <DeploymentSection />
       <PricingSection />
+      <DeploymentSection />
       <CtaSection />
     </main>
     <AppFooter />
